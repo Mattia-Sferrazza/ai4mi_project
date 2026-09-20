@@ -1,7 +1,15 @@
 import unittest
+import subprocess
+import sys
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
+import numpy as np
 import torch
+from PIL import Image
 
+from evaluate_saved_epochs import discover_epochs
+from evaluate_saved_predictions import evaluate_prediction_directory
 from losses import CrossEntropy, CrossEntropyDiceLoss, DiceLoss
 from utils import PatientVolumeDice, class2one_hot, dice_coef, patient_id_from_stem
 
@@ -75,6 +83,76 @@ class PatientVolumeDiceTests(unittest.TestCase):
         metric.update(labels, labels, ["Patient_01_0000"])
         _, volume_dice = metric.compute()
         self.assertTrue(torch.isnan(volume_dice[0, 1]))
+
+
+class SavedPredictionEvaluationTests(unittest.TestCase):
+    @staticmethod
+    def save_mask(path: Path, labels: np.ndarray) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        Image.fromarray((labels * 63).astype(np.uint8)).save(path)
+
+    def test_saved_predictions_are_combined_as_patient_volumes(self):
+        with TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            pred_dir = root / "pred"
+            gt_dir = root / "gt"
+
+            target_with_organ = np.array([[1, 1], [0, 0]], dtype=np.uint8)
+            empty = np.zeros((2, 2), dtype=np.uint8)
+            self.save_mask(gt_dir / "Patient_01_0000.png", target_with_organ)
+            self.save_mask(gt_dir / "Patient_01_0001.png", empty)
+            self.save_mask(pred_dir / "Patient_01_0000.png", empty)
+            self.save_mask(pred_dir / "Patient_01_0001.png", empty)
+
+            patients, dice, _ = evaluate_prediction_directory(
+                pred_dir, gt_dir, classes=2
+            )
+            self.assertEqual(patients, ["Patient_01"])
+            self.assertAlmostEqual(dice[0, 1], 0.0, places=6)
+
+    def test_epoch_discovery_is_numeric_and_requires_prediction_split(self):
+        with TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            (root / "iter010" / "val").mkdir(parents=True)
+            (root / "iter002" / "val").mkdir(parents=True)
+            (root / "iter003").mkdir()
+            (root / "iteration004" / "val").mkdir(parents=True)
+            self.assertEqual(
+                discover_epochs(root, "val"),
+                [(2, root / "iter002" / "val"), (10, root / "iter010" / "val")],
+            )
+
+    def test_all_epoch_cli_selects_best_volume_dice(self):
+        with TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            run_dir = root / "run"
+            gt_dir = root / "gt"
+            output_dir = root / "output"
+            target = np.array([[1, 1], [0, 0]], dtype=np.uint8)
+            empty = np.zeros((2, 2), dtype=np.uint8)
+            name = "Patient_01_0000.png"
+            self.save_mask(gt_dir / name, target)
+            self.save_mask(run_dir / "iter000" / "val" / name, empty)
+            self.save_mask(run_dir / "iter001" / "val" / name, target)
+
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(Path(__file__).parents[1] / "evaluate_saved_epochs.py"),
+                    "--run-dir", str(run_dir),
+                    "--gt-dir", str(gt_dir),
+                    "--output-dir", str(output_dir),
+                    "--prefix", "test",
+                    "--classes", "2",
+                    "--workers", "2",
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            summary = (output_dir / "test_best_epoch_3d_dice.txt").read_text()
+            self.assertIn("Best patient-level 3D-Dice epoch: 1", summary)
+            self.assertIn("Mean foreground patient-level 3D Dice: 1.000000", summary)
 
 
 if __name__ == "__main__":
