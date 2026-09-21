@@ -132,7 +132,10 @@ def slice_patient(id_: str, dest_path: Path, source_path: Path, shape: tuple[int
                 warnings.filterwarnings("ignore", category=UserWarning)
                 imsave(str(save_path / filename), data)
 
-    return dx, dy, dz
+    # The slices are resized from their original in-plane dimensions.  Store
+    # the effective spacing of the saved PNGs so physical-distance metrics
+    # such as 3D HD95 are reported in millimetres.
+    return dx * x / shape[0], dy * y / shape[1], dz
 
 
 def get_splits(src_path: Path, retains: int, fold: int) -> tuple[list[str], list[str], list[str]]:
