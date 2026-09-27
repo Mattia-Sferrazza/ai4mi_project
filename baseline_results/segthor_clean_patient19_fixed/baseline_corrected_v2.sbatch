@@ -54,7 +54,7 @@ python split_merged_label_cc.py \
     --source-root "$SOURCE" \
     --dest-root "$CLEAN_V2"
 
-python slice_segthor.py \
+python -m preprocessing.slice_segthor \
     --source_dir "$CLEAN_V2" \
     --dest_dir "$SLICED_V2" \
     --shape 256 256 \

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=segthor_v2
 #SBATCH --account=gpuuva084
-#SBATCH --partition=gpu_mig
+#SBATCH --partition=gpu_a100
 #SBATCH --gpus=1
 #SBATCH --cpus-per-task=9
 #SBATCH --mem=50G
@@ -11,9 +11,10 @@
 
 set -euo pipefail
 
-PROJECT="$HOME/projects/ai4mi_project"
+PROJECT="$HOME/ai4mi_project"
 SCRATCH_PROJECT="/scratch-shared/$USER/ai4mi_project"
-SOURCE="$HOME/data/segthor_part1"
+SOURCE="$PROJECT/data/segthor_part1"
+
 CLEAN_V2="$SCRATCH_PROJECT/data/segthor_part1_clean_cc_v2"
 SLICED_V2="$SCRATCH_PROJECT/data/SEGTHOR_CLEAN_v2"
 RESULT_V2="$SCRATCH_PROJECT/results/segthor_clean/baseline_patient19_fixed"
@@ -23,10 +24,13 @@ cd "$PROJECT"
 module purge
 module load 2025
 module load Anaconda3/2025.06-1
-source .venv/bin/activate
+source ai4mi/bin/activate
 
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="$SLURM_CPUS_PER_TASK"
+export WANDB_PROJECT="${WANDB_PROJECT:-ai4mi-segthor}"
+export WANDB_RUN_NAME="${WANDB_RUN_NAME:-baseline-patient19-fixed}"
+export WANDB_RUN_GROUP="${WANDB_RUN_GROUP:-baseline}"
 
 echo "Started: $(date)"
 echo "Host: $(hostname)"
@@ -50,11 +54,11 @@ fi
 
 mkdir -p "$SCRATCH_PROJECT/data" "$SCRATCH_PROJECT/results/segthor_clean"
 
-python split_merged_label_cc.py \
+python -m preprocessing.split_merged_label_cc \
     --source-root "$SOURCE" \
     --dest-root "$CLEAN_V2"
 
-python slice_segthor.py \
+python -m preprocessing.slice_segthor \
     --source_dir "$CLEAN_V2" \
     --dest_dir "$SLICED_V2" \
     --shape 256 256 \

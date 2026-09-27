@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 import torch
 
-from ENet import ENet
+from models.ENet import ENet
 
 
 def main() -> None:

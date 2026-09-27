@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import argparse
+import os
 import warnings
 from typing import Any
 from pathlib import Path
@@ -31,6 +32,7 @@ from operator import itemgetter
 from shutil import copytree, rmtree
 
 import torch
+import wandb
 import numpy as np
 import torch.nn.functional as F
 from torch import nn, Tensor
@@ -39,9 +41,9 @@ from torch.utils.data import DataLoader
 
 from functools import partial 
 
-from dataset import SliceDataset
-from ShallowNet import shallowCNN
-from ENet import ENet
+from data_loading.dataset import SliceDataset
+from models.ShallowNet import shallowCNN
+from models.ENet import ENet
 from utils import (Dcm,
                    class2one_hot,
                    probs2one_hot,
@@ -132,6 +134,15 @@ def setup(args) -> tuple[nn.Module, Any, Any, DataLoader, DataLoader, int]:
 def runTraining(args):
     print(f">>> Setting up to train on {args.dataset} with {args.mode}")
     net, optimizer, device, train_loader, val_loader, K = setup(args)
+
+    wandb_run = wandb.init(
+        project=os.environ.get("WANDB_PROJECT", "ai4mi-segthor"),
+        entity=os.environ.get("WANDB_ENTITY"),
+        name=os.environ.get("WANDB_RUN_NAME", f"{args.dataset}-{args.loss}"),
+        group=os.environ.get("WANDB_RUN_GROUP"),
+        mode=os.environ.get("WANDB_MODE", "online"),
+        config=vars(args) | {"classes": K, "device": str(device)},
+    )
 
     if args.mode == "full":
         idk = list(range(K))  # Supervise both background and foreground
@@ -242,6 +253,20 @@ def runTraining(args):
         print(f">>> Patient-level 3D validation Dice at epoch {e}: {current_dice:05.3f} "
               + organ_message)
 
+        epoch_metrics = {
+            "epoch": e,
+            "train/loss": torch.nanmean(log_loss_tra[e]).item(),
+            "validation/loss": torch.nanmean(log_loss_val[e]).item(),
+            "validation/slice_dice": torch.nanmean(log_dice_val[e, :, 1:]).item(),
+            "validation/3d_dice": current_dice,
+        }
+        epoch_metrics |= {
+            f"validation/3d_dice_class_{k}": organ_scores[k - 1].item()
+            for k in range(1, K)
+            if torch.isfinite(organ_scores[k - 1])
+        }
+        wandb_run.log(epoch_metrics, step=e)
+
         # I save it at each epochs, in case the code crashes or I decide to stop it early
         np.save(args.dest / "loss_tra.npy", log_loss_tra)
         np.save(args.dest / "dice_tra.npy", log_dice_tra)
@@ -267,6 +292,8 @@ def runTraining(args):
 
             torch.save(net, args.dest / "bestmodel.pkl")
             torch.save(net.state_dict(), args.dest / "bestweights.pt")
+
+    wandb_run.finish()
 
 
 def main():

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-PROJECT="$HOME/projects/ai4mi_project"
+PROJECT="$HOME/ai4mi_project"
 RUN_TAG="${1:-preliminary_3d_dice}"
 
 cd "$PROJECT"
