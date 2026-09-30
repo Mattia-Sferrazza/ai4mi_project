@@ -24,11 +24,27 @@ data/segthor_part1: data/segthor_part1.zip
 	unzip -q $<
 	rm -f $@/.DS_STORE
 
+data/segthor_train_full: data/segthor_train_full.zip
+	$(info $(yellow)unzip $<$(reset))
+	sha256sum -c data/segthor_train_full.sha256
+	rm -rf $@_tmp
+	mkdir -p $@_tmp
+	unzip -q $< -d $@_tmp
+	mv $@_tmp $@
+
 data/SEGTHOR:
 	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
 	rm -rf $@_tmp $@
 	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/segthor_part1 --dest_dir $@_tmp \
-		--shape 256 256 --retain 5
+		--shape 256 256 --target-spacing 1.5 1.5 --window -1000 1000 --retains 5
+	mv $@_tmp $@
+
+## Full clean dataset: 30 training patients and 10 validation patients
+data/SEGTHOR_FULL: data/segthor_train_full
+	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
+	rm -rf $@_tmp $@
+	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/segthor_train_full --dest_dir $@_tmp \
+		--shape 256 256 --target-spacing 1.5 1.5 --window -1000 1000 --retains 10 --seed 0
 	mv $@_tmp $@
 
 ## Corrected ground truth
@@ -37,5 +53,5 @@ data/SEGTHOR_CORRECTED:
 	find data/correct_data -name '.DS_Store' -delete
 	rm -rf $@_tmp $@
 	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/correct_data --dest_dir $@_tmp \
-		--shape 256 256 --retain 5
+		--shape 256 256 --target-spacing 1.5 1.5 --window -1000 1000 --retains 5
 	mv $@_tmp $@

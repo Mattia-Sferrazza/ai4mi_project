@@ -1,0 +1,13 @@
+{
+  "patients": 40,
+  "training_patients": 30,
+  "validation_patients": 10,
+  "test_patients": 0,
+  "image_slices": 7420,
+  "label_slices": 7420,
+  "output_shape": [256, 256],
+  "requested_in_plane_spacing_mm": [1.5, 1.5],
+  "effective_spacing_x_mm_range": [1.4976498652249575, 1.500702427700162],
+  "max_requested_spacing_error_mm": 0.002350134775042534,
+  "validation_status": "passed"
+}

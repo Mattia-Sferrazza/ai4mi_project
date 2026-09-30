@@ -123,10 +123,10 @@ You can also create new conda environment in anaconda prompt
 
 <a id="getting-the-data"></a>
 ### Getting the data
-The synthetic dataset is generated randomly, whereas for Segthor it is required to put the file [`segthor_train_full.zip`](https://amsuni-my.sharepoint.com/:u:/g/personal/h_t_g_kervadec_uva_nl/IQAdjIjKmc4XRbIBQl9qeBs8AXOF-9Evw0v_lEbvLn2mUdE?e=lZev9Z) (requires a UvA account) in the `data/` folder. If the computer running it is powerful enough, the recipe for `data/SEGTHOR` can be modified in the [Makefile](Makefile) to enable multi-processing (`-p -1` option, see `python -m preprocessing.slice_segthor --help` or its code directly).
+The synthetic dataset is generated randomly. For SegTHOR, put [`segthor_train_full.zip`](https://amsuni-my.sharepoint.com/:u:/g/personal/h_t_g_kervadec_uva_nl/IQAdjIjKmc4XRbIBQl9qeBs8AXOF-9Evw0v_lEbvLn2mUdE?e=lZev9Z) (requires a UvA account) in the `data/` folder. The full-data recipe verifies and extracts the archive, creates a deterministic 30/10 patient-level split, clips intensities to `[-1000, 1000]` HU, takes a centred 384 mm field of view, and resamples it to 256x256 at approximately 1.5 mm in-plane spacing. Split and transformation metadata are saved with the generated PNGs. Use `-p -1` to enable all available CPU cores (see `python -m preprocessing.slice_segthor --help`).
 ```
 $ make data/TOY2
-$ make data/SEGTHOR
+$ make data/SEGTHOR_FULL
 ```
 
 
@@ -136,14 +136,19 @@ $ rm -rf data/TOY2_tmp data/TOY2
 $ python examples/gen_two_circles.py --dest data/TOY2_tmp -n 1000 100 -r 25 -wh 256 256
 $ mv data/TOY2_tmp data/TOY2
 
-$ sha256sum -c data/segthor_train.sha256
-$ unzip -q data/segthor_train.zip
+$ sha256sum -c data/segthor_train_full.sha256
+$ mkdir data/segthor_train_full
+$ unzip -q data/segthor_train_full.zip -d data/segthor_train_full
 
-$ rm -rf data/SEGTHOR_tmp data/SEGTHOR
-$ python -m preprocessing.slice_segthor --source_dir data/segthor_train --dest_dir data/SEGTHOR_tmp \
-         --shape 256 256 --retain 10
-$ mv data/SEGTHOR_tmp data/SEGTHOR
-````
+$ python -m preprocessing.slice_segthor \
+         --source_dir data/segthor_train_full \
+         --dest_dir data/SEGTHOR_FULL \
+         --shape 256 256 --target-spacing 1.5 1.5 \
+         --window -1000 1000 --retains 10 --seed 0
+$ python -m preprocessing.validate_processed_segthor data/SEGTHOR_FULL
+```
+
+Patients 1–20 in the full archive are the same CT scans as the earlier partial dataset. Use the official full-dataset masks rather than appending the corrected partial dataset, which would duplicate patients across the cohort.
 
 <a id="training-a-base-network"></a>
 ### Training a base network
