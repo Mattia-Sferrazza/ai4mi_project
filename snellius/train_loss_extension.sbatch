@@ -22,7 +22,7 @@ case "$LOSS" in
         ;;
 esac
 
-PROJECT="$HOME/projects/ai4mi_project"
+PROJECT="$HOME/ai4mi_project"
 SCRATCH_PROJECT="/scratch-shared/$USER/ai4mi_project"
 EXPECTED_DATA="$SCRATCH_PROJECT/data/SEGTHOR_CLEAN_v2"
 DATA_LINK="$PROJECT/data/SEGTHOR_CLEAN"
@@ -35,7 +35,7 @@ cd "$PROJECT"
 module purge
 module load 2025
 module load Anaconda3/2025.06-1
-source .venv/bin/activate
+source ai4mi/bin/activate
 
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="$SLURM_CPUS_PER_TASK"
@@ -48,7 +48,10 @@ echo "Git commit: $(git rev-parse HEAD)"
 python --version
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 python -c 'import torch; assert torch.cuda.is_available(), "CUDA is unavailable"; print("PyTorch CUDA:", torch.cuda.get_device_name(0))'
-python -m py_compile main.py utils.py losses.py plot.py summarize_segthor_run.py evaluate_saved_predictions.py
+python -m py_compile main.py utils.py losses.py \
+    data_loading/dataset.py models/ENet.py models/ShallowNet.py \
+    plotting/plot.py evaluation/summarize_segthor_run.py \
+    evaluation/evaluate_saved_predictions.py
 python -m unittest discover -s tests -v
 
 if [[ ! -d "$EXPECTED_DATA/train/img" || ! -d "$EXPECTED_DATA/val/img" ]]; then
@@ -88,15 +91,15 @@ python -u main.py \
     --dest "$RUN_DIR" \
     --gpu
 
-python plot.py --metric_file "$RUN_DIR/loss_tra.npy" \
+python -m plotting.plot --metric_file "$RUN_DIR/loss_tra.npy" \
     --dest "$RUN_DIR/loss_train.png" --headless
-python plot.py --metric_file "$RUN_DIR/loss_val.npy" \
+python -m plotting.plot --metric_file "$RUN_DIR/loss_val.npy" \
     --dest "$RUN_DIR/loss_val.png" --headless
-python plot.py --metric_file "$RUN_DIR/dice3d_val.npy" \
+python -m plotting.plot --metric_file "$RUN_DIR/dice3d_val.npy" \
     --dest "$RUN_DIR/dice3d_val.png" --headless
 
-python summarize_segthor_run.py --run-dir "$RUN_DIR" | tee "$RUN_DIR/summary.txt"
-python evaluate_saved_predictions.py \
+python -m evaluation.summarize_segthor_run --run-dir "$RUN_DIR" | tee "$RUN_DIR/summary.txt"
+python -m evaluation.evaluate_saved_predictions \
     --pred-dir "$RUN_DIR/best_epoch/val" \
     --gt-dir "$GT_DIR" \
     --csv "$RUN_DIR/best_epoch_3d_dice.csv" \
@@ -105,7 +108,7 @@ python evaluate_saved_predictions.py \
 if [[ "$LOSS" == "dice" ]]; then
     BASELINE_PRED="$SCRATCH_PROJECT/results/segthor_clean/baseline_patient19_fixed/best_epoch/val"
     if [[ -d "$BASELINE_PRED" ]]; then
-        python evaluate_saved_predictions.py \
+        python -m evaluation.evaluate_saved_predictions \
             --pred-dir "$BASELINE_PRED" \
             --gt-dir "$GT_DIR" \
             --csv "$RUN_PARENT/baseline_ce_3d_dice.csv" \
