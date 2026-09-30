@@ -32,8 +32,8 @@ from scipy import ndimage
 from skimage.measure import label, regionprops
 from skimage.segmentation import watershed
 
-from fix_patient15 import make_patient15_split
-from fix_patient19 import make_patient19_split
+from .fix_patient15 import make_patient15_split
+from .fix_patient19 import make_patient19_split
 
 
 @dataclass

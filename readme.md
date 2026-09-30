@@ -123,7 +123,7 @@ You can also create new conda environment in anaconda prompt
 
 <a id="getting-the-data"></a>
 ### Getting the data
-The synthetic dataset is generated randomly, whereas for Segthor it is required to put the file [`segthor_train_full.zip`](https://amsuni-my.sharepoint.com/:u:/g/personal/h_t_g_kervadec_uva_nl/IQAdjIjKmc4XRbIBQl9qeBs8AXOF-9Evw0v_lEbvLn2mUdE?e=lZev9Z) (required a UvA account) in the `data/` folder. If the computer running it is powerful enough, the recipe for `data/SEGTHOR` can be modified in the [Makefile](Makefile) to enable multi-processing (`-p -1` option, see `python slice_segthor.py --help` or its code directly).
+The synthetic dataset is generated randomly, whereas for Segthor it is required to put the file [`segthor_train_full.zip`](https://amsuni-my.sharepoint.com/:u:/g/personal/h_t_g_kervadec_uva_nl/IQAdjIjKmc4XRbIBQl9qeBs8AXOF-9Evw0v_lEbvLn2mUdE?e=lZev9Z) (requires a UvA account) in the `data/` folder. If the computer running it is powerful enough, the recipe for `data/SEGTHOR` can be modified in the [Makefile](Makefile) to enable multi-processing (`-p -1` option, see `python -m preprocessing.slice_segthor --help` or its code directly).
 ```
 $ make data/TOY2
 $ make data/SEGTHOR
@@ -133,14 +133,14 @@ $ make data/SEGTHOR
 For windows users, you can use the following instead
 ```
 $ rm -rf data/TOY2_tmp data/TOY2
-$ python gen_two_circles.py --dest data/TOY2_tmp -n 1000 100 -r 25 -wh 256 256
+$ python examples/gen_two_circles.py --dest data/TOY2_tmp -n 1000 100 -r 25 -wh 256 256
 $ mv data/TOY2_tmp data/TOY2
 
 $ sha256sum -c data/segthor_train.sha256
 $ unzip -q data/segthor_train.zip
 
 $ rm -rf data/SEGTHOR_tmp data/SEGTHOR
-$ python  slice_segthor.py --source_dir data/segthor_train --dest_dir data/SEGTHOR_tmp \
+$ python -m preprocessing.slice_segthor --source_dir data/segthor_train --dest_dir data/SEGTHOR_tmp \
          --shape 256 256 --retain 10
 $ mv data/SEGTHOR_tmp data/SEGTHOR
 ````
@@ -178,7 +178,7 @@ $ python viewer/viewer.py --img_source data/TOY2/val/img \
     data/TOY2/val/gt results/toy2/ce/iter000/val results/toy2/ce/iter005/val results/toy2/ce/best_epoch/val \
     --show_img -C 256 --no_contour
 ```
-![Example of the viewer on the TOY example](viewer_toy.png)
+![Example of the viewer on the TOY example](readme_utils/viewer_toy.png)
 **Note:** if using it from a SSH session, it requires X to be forwarded ([Unix/BSD](https://man.archlinux.org/man/ssh.1#X), [Windows](https://mobaxterm.mobatek.net/documentation.html#1_4)) for it to work. Note that X forwarding also needs to be enabled on the server side.
 
 
@@ -188,31 +188,31 @@ $ python viewer/viewer.py --img_source data/SEGTHOR/val/img \
     -n 2 -C 5 --remap "{63: 1, 126: 2, 189: 3, 252: 4}" \
     --legend --class_names background esophagus heart trachea aorta
 ```
-<!-- ![Example of the viewer on SegTHOR](viewer_segthor.png) -->
+<!-- ![Example of the viewer on SegTHOR](readme_utils/viewer_segthor.png) -->
 
 <a id="3d-viewers"></a>
 #### 3D viewers
 To look at the results in 3D, it is necessary to reconstruct the 3D volume from the individual 2D predictions saved as images.
 To stitch the `.png` back to a nifti file:
 ```
-$ python stitch.py --data_folder results/segthor/ce/best_epoch/val \
+$ python -m postprocessing.stitch --data_folder results/segthor/ce/best_epoch/val \
     --dest_folder volumes/segthor/ce \
     --num_classes 255 --grp_regex "(Patient_\d\d)_\d\d\d\d" \
     --source_scan_pattern "data/segthor_train/train/{id_}/GT.nii.gz"
 ```
 
 [3D Slicer](https://www.slicer.org/) and [ITK Snap](http://www.itksnap.org) are two popular viewers for medical data, here comparing `GT.nii.gz` and the corresponding stitched prediction `Patient_01.nii.gz`:
-![Viewing label and prediction](3dslicer.png)
+![Viewing label and prediction](readme_utils/3dslicer.png)
 
 Zooming on the prediction with smoothing disabled:
-![Viewing the prediction without smoothing](3dslicer_zoom.png)
+![Viewing the prediction without smoothing](readme_utils/3dslicer_zoom.png)
 
 
 <a id="plotting-the-metrics"></a>
 ### Plotting the metrics
 There are some facilities to plot the metrics saved by [`main.py`](main.py):
 ```
-$ python plot.py --help
+$ python -m plotting.plot --help
 usage: plot.py [-h] --metric_file METRIC_MODE.npy [--dest METRIC_MODE.png] [--headless]
 
 Plot data over time
@@ -224,9 +224,9 @@ options:
   --dest METRIC_MODE.png
                         Optional: save the plot to a .png file
   --headless            Does not display the plot and save it directly (implies --dest to be provided.
-$ python plot.py --metric_file results/segthor/ce/dice_val.npy --dest results/segthor/ce/dice_val.png
+$ python -m plotting.plot --metric_file results/segthor/ce/dice_val.npy --dest results/segthor/ce/dice_val.png
 ```
-![Validation DSC](dice_val.png)
+![Validation DSC](readme_utils/dice_val.png)
 
 
 <a id="submission-and-scoring"></a>

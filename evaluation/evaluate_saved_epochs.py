@@ -11,7 +11,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from evaluate_saved_predictions import (
+from evaluation.evaluate_saved_predictions import (
     ORGAN_NAMES,
     evaluate_prediction_directory,
 )

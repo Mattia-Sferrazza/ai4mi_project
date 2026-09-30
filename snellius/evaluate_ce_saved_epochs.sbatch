@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-PROJECT="$HOME/projects/ai4mi_project"
+PROJECT="$HOME/ai4mi_project"
 SCRATCH_PROJECT="/scratch-shared/$USER/ai4mi_project"
 CE_RUN="$SCRATCH_PROJECT/results/segthor_clean/baseline_patient19_fixed"
 GT_DIR="$SCRATCH_PROJECT/data/SEGTHOR_CLEAN_v2/val/gt"
@@ -21,7 +21,7 @@ cd "$PROJECT"
 module purge
 module load 2025
 module load Anaconda3/2025.06-1
-source .venv/bin/activate
+source ai4mi/bin/activate
 
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS=1
@@ -45,7 +45,7 @@ if [[ "$gt_count" -ne 915 ]]; then
     exit 1
 fi
 
-python -u evaluate_saved_epochs.py \
+python -u -m evaluation.evaluate_saved_epochs \
     --run-dir "$CE_RUN" \
     --gt-dir "$GT_DIR" \
     --output-dir "$OUTPUT_DIR" \

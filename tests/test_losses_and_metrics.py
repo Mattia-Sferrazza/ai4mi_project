@@ -8,8 +8,8 @@ import numpy as np
 import torch
 from PIL import Image
 
-from evaluate_saved_epochs import discover_epochs
-from evaluate_saved_predictions import (
+from evaluation.evaluate_saved_epochs import discover_epochs
+from evaluation.evaluate_saved_predictions import (
     evaluate_hd95_directory,
     evaluate_prediction_directory,
 )
@@ -193,7 +193,7 @@ class SavedPredictionEvaluationTests(unittest.TestCase):
             subprocess.run(
                 [
                     sys.executable,
-                    str(Path(__file__).parents[1] / "evaluate_saved_epochs.py"),
+                    "-m", "evaluation.evaluate_saved_epochs",
                     "--run-dir", str(run_dir),
                     "--gt-dir", str(gt_dir),
                     "--output-dir", str(output_dir),

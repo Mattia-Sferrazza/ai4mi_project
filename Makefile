@@ -12,7 +12,7 @@ data/TOY:
 
 data/TOY2:
 	rm -rf $@_tmp $@
-	python gen_two_circles.py --dest $@_tmp -n 1000 100 -r 25 -wh 256 256
+	python examples/gen_two_circles.py --dest $@_tmp -n 1000 100 -r 25 -wh 256 256
 	mv $@_tmp $@
 
 
@@ -25,17 +25,17 @@ data/segthor_part1: data/segthor_part1.zip
 	rm -f $@/.DS_STORE
 
 data/SEGTHOR:
-	$(info $(green)python $(CFLAGS) slice_segthor.py$(reset))
+	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
 	rm -rf $@_tmp $@
-	python $(CFLAGS) slice_segthor.py --source_dir data/segthor_part1 --dest_dir $@_tmp \
+	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/segthor_part1 --dest_dir $@_tmp \
 		--shape 256 256 --retain 5
 	mv $@_tmp $@
 
 ## Corrected ground truth
 data/SEGTHOR_CORRECTED:
-	$(info $(green)python $(CFLAGS) slice_segthor.py$(reset))
+	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
 	find data/correct_data -name '.DS_Store' -delete
 	rm -rf $@_tmp $@
-	python $(CFLAGS) slice_segthor.py --source_dir data/correct_data --dest_dir $@_tmp \
+	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/correct_data --dest_dir $@_tmp \
 		--shape 256 256 --retain 5
 	mv $@_tmp $@
