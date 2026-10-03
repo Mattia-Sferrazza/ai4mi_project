@@ -7,7 +7,9 @@ import numpy as np
 from PIL import Image
 
 from preprocessing.slice_segthor import (
+    apply_clahe,
     crop_shape_for_spacing,
+    get_patient_split,
     get_splits,
     slice_patient,
     window_ct,
@@ -24,6 +26,15 @@ class IntensityPreprocessingTests(unittest.TestCase):
     def test_invalid_hu_window_is_rejected(self):
         with self.assertRaises(ValueError):
             window_ct(np.zeros((2, 2), dtype=np.int16), 100, 100)
+
+    def test_clahe_is_deterministic_uint8_and_increases_local_contrast(self):
+        image = np.tile(np.linspace(100, 120, 64, dtype=np.uint8), (64, 1))
+        first = apply_clahe(image, kernel_size=16, clip_limit=0.01)
+        second = apply_clahe(image, kernel_size=16, clip_limit=0.01)
+
+        self.assertEqual(first.dtype, np.uint8)
+        np.testing.assert_array_equal(first, second)
+        self.assertGreater(int(first.max()) - int(first.min()), int(image.max()) - int(image.min()))
 
 
 class SpatialPreprocessingTests(unittest.TestCase):
@@ -113,14 +124,43 @@ class SplitTests(unittest.TestCase):
             for patient_index in range(1, 41):
                 (train / f"Patient_{patient_index:02d}").mkdir(parents=True)
 
-            first = get_splits(root, retains=10, fold=0, seed=0)
-            second = get_splits(root, retains=10, fold=0, seed=0)
+            first = get_splits(root, validation_count=6, test_count=6, seed=0)
+            second = get_splits(root, validation_count=6, test_count=6, seed=0)
 
             self.assertEqual(first, second)
             training, validation, test = first
-            self.assertEqual((len(training), len(validation), len(test)), (30, 10, 0))
+            self.assertEqual((len(training), len(validation), len(test)), (28, 6, 6))
             self.assertFalse(set(training) & set(validation))
-            self.assertEqual(len(set(training) | set(validation)), 40)
+            self.assertFalse((set(training) | set(validation)) & set(test))
+            self.assertEqual(len(set(training) | set(validation) | set(test)), 40)
+
+    def test_fixed_split_has_expected_counts_and_cohort_balance(self):
+        with TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            train = root / "train"
+            for patient_index in range(1, 41):
+                (train / f"Patient_{patient_index:02d}").mkdir(parents=True)
+
+            manifest = get_patient_split(root, validation_count=6, test_count=6, seed=0)
+            training = set(manifest["train"])
+            validation = set(manifest["val"])
+            test = set(manifest["test"])
+
+            self.assertEqual(len(training), 28)
+            self.assertEqual(len(validation), 6)
+            self.assertEqual(len(test), 6)
+            self.assertFalse(training & validation)
+            self.assertFalse((training | validation) & test)
+            self.assertEqual(len(training | validation | test), 40)
+            self.assertTrue(all(int(patient.split("_")[1]) >= 21 for patient in test))
+            self.assertEqual(
+                sum(int(patient.split("_")[1]) <= 20 for patient in validation),
+                4,
+            )
+            self.assertEqual(
+                sum(int(patient.split("_")[1]) >= 21 for patient in validation),
+                2,
+            )
 
 
 if __name__ == "__main__":

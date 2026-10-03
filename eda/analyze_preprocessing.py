@@ -18,7 +18,9 @@ from skimage.transform import resize
 
 ORGAN_NAMES = {1: "Esophagus", 2: "Heart", 3: "Trachea", 4: "Aorta"}
 PLOT_PATIENTS = ("Patient_05", "Patient_19", "Patient_30", "Patient_40")
-CROP_SIZES = (256, 288, 320, 352)
+CROP_FIELDS_OF_VIEW_MM = (320, 352, 384, 416)
+OUTPUT_SHAPE = (384, 384)
+TARGET_IN_PLANE_SPACING_MM = (1.0, 1.0)
 HU_WINDOW = (-1000.0, 1000.0)
 
 
@@ -32,7 +34,7 @@ def centre_crop(array: np.ndarray, size: int | tuple[int, int]) -> np.ndarray:
 def resize_image(array: np.ndarray) -> np.ndarray:
     return resize(
         array,
-        (256, 256),
+        OUTPUT_SHAPE,
         order=1,
         mode="constant",
         preserve_range=True,
@@ -43,7 +45,7 @@ def resize_image(array: np.ndarray) -> np.ndarray:
 def resize_label(array: np.ndarray) -> np.ndarray:
     return resize(
         array,
-        (256, 256),
+        OUTPUT_SHAPE,
         order=0,
         mode="constant",
         preserve_range=True,
@@ -123,9 +125,12 @@ def analyse(args: argparse.Namespace) -> None:
             "bbox_y_min": bbox[2],
             "bbox_y_max": bbox[3],
         }
-        for crop_size in CROP_SIZES:
-            kept = int(np.count_nonzero(centre_crop(foreground, crop_size)))
-            row[f"crop_{crop_size}_retained_percent"] = 100.0 * kept / total_foreground
+        for field_of_view_mm in CROP_FIELDS_OF_VIEW_MM:
+            crop_shape = tuple(
+                int(round(field_of_view_mm / spacing[axis])) for axis in (0, 1)
+            )
+            kept = int(np.count_nonzero(centre_crop(foreground, crop_shape)))
+            row[f"fov_{field_of_view_mm}_retained_percent"] = 100.0 * kept / total_foreground
         cohort_rows.append(row)
 
         if patient in PLOT_PATIENTS:
@@ -139,7 +144,8 @@ def analyse(args: argparse.Namespace) -> None:
             )
             direct_gt = resize_label(gt_slice)
             physical_crop_shape = tuple(
-                int(round(256 * 1.5 / spacing[axis])) for axis in (0, 1)
+                int(round(OUTPUT_SHAPE[axis] * TARGET_IN_PLANE_SPACING_MM[axis] / spacing[axis]))
+                for axis in (0, 1)
             )
             cropped_slice = centre_crop(raw_slice, physical_crop_shape)
             cropped_gt = centre_crop(gt_slice, physical_crop_shape)
@@ -188,7 +194,7 @@ def analyse(args: argparse.Namespace) -> None:
         "archive_sha256": "53e99dfb45234a9ed4ac573db767cb5e3179da209c6a5bf1ddc999bce03f4e51",
         "spacing_x_range_mm": [min(row["spacing_x_mm"] for row in cohort_rows), max(row["spacing_x_mm"] for row in cohort_rows)],
         "spacing_z_values_mm": sorted({row["spacing_z_mm"] for row in cohort_rows}),
-        "crop_320_min_retained_percent": min(row["crop_320_retained_percent"] for row in cohort_rows),
+        "fov_384_min_retained_percent": min(row["fov_384_retained_percent"] for row in cohort_rows),
         "current_zero_hu_uint8_range": [min(row["zero_hu_current_uint8"] for row in cohort_rows), max(row["zero_hu_current_uint8"] for row in cohort_rows)],
         "fixed_zero_hu_uint8": 127.5,
         "fixed20_ct_identical_count": sum(bool(row["ct_voxels_identical"]) for row in comparison_rows),
@@ -252,16 +258,18 @@ def make_crop_plot(rows: list[dict[str, object]], output: Path) -> None:
         width = row["bbox_y_max"] - row["bbox_y_min"] + 1
         height = row["bbox_x_max"] - row["bbox_x_min"] + 1
         axes[0].add_patch(Rectangle((row["bbox_y_min"], row["bbox_x_min"]), width, height, fill=False, edgecolor="#4472c4", linewidth=0.55, alpha=0.35))
-    crop_start = (512 - 320) // 2
-    axes[0].add_patch(Rectangle((crop_start, crop_start), 320, 320, fill=False, edgecolor="#d62728", linewidth=2.2, label="320×320 crop"))
+    reference_spacing = float(np.median([row["spacing_x_mm"] for row in rows]))
+    reference_crop = int(round(384 / reference_spacing))
+    crop_start = (512 - reference_crop) // 2
+    axes[0].add_patch(Rectangle((crop_start, crop_start), reference_crop, reference_crop, fill=False, edgecolor="#d62728", linewidth=2.2, label="384 mm crop at median spacing"))
     axes[0].set(title="All 40 foreground bounding boxes", xlabel="Image column", ylabel="Image row")
     axes[0].legend(frameon=False)
 
-    for size, color in zip(CROP_SIZES, ["#c44e52", "#dd8452", "#55a868", "#4c72b0"]):
-        retained = [row[f"crop_{size}_retained_percent"] for row in rows]
-        axes[1].scatter([size] * len(retained), retained, color=color, alpha=0.6, s=22)
-        axes[1].plot(size, min(retained), marker="D", color="black", markersize=5)
-    axes[1].set(xlabel="Fixed center-crop size (pixels)", ylabel="Foreground voxels retained (%)", title="Crop safety across patients", xticks=CROP_SIZES, ylim=(97, 100.1))
+    for field_of_view_mm, color in zip(CROP_FIELDS_OF_VIEW_MM, ["#c44e52", "#dd8452", "#55a868", "#4c72b0"]):
+        retained = [row[f"fov_{field_of_view_mm}_retained_percent"] for row in rows]
+        axes[1].scatter([field_of_view_mm] * len(retained), retained, color=color, alpha=0.6, s=22)
+        axes[1].plot(field_of_view_mm, min(retained), marker="D", color="black", markersize=5)
+    axes[1].set(xlabel="Centred physical field of view (mm)", ylabel="Foreground voxels retained (%)", title="Crop safety across patients", xticks=CROP_FIELDS_OF_VIEW_MM, ylim=(97, 100.1))
     axes[1].grid(alpha=0.2)
     figure.savefig(output / "crop_motivation_and_safety.png", dpi=180, facecolor="white")
     plt.close(figure)
@@ -274,6 +282,7 @@ def make_spacing_plot(rows: list[dict[str, object]], output: Path) -> None:
     figure, axis = plt.subplots(figsize=(10, 4.5), constrained_layout=True)
     axis.scatter(patients, in_plane, label="In-plane x/y spacing", color="#3569b7", s=30)
     axis.scatter(patients, through_plane, label="Slice spacing (z)", color="#c83e4d", marker="x", s=38)
+    axis.axhline(1.0, color="#2f8f5b", linestyle="--", linewidth=1.5, label="Chosen in-plane target: 1.0 mm")
     axis.set(xlabel="Patient", ylabel="Voxel spacing (mm)", title="Voxel spacing is not identical across patients")
     axis.grid(alpha=0.2)
     axis.legend(frameon=False)

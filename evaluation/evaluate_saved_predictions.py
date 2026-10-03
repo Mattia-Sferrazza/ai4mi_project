@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import json
 import pickle
 from collections import defaultdict
 from pathlib import Path
@@ -14,6 +15,36 @@ from utils import patient_id_from_stem, surface_hd95
 
 
 ORGAN_NAMES = ("background", "esophagus", "heart", "trachea", "aorta")
+
+
+def patient_ids_from_split(split_path: Path, subset: str) -> set[str]:
+    split = json.loads(split_path.read_text(encoding="utf-8"))
+    return set(split[subset])
+
+
+def matched_prediction_and_ground_truth(
+    pred_dir: Path,
+    gt_dir: Path,
+    expected_patient_ids: set[str] | None,
+) -> tuple[dict[str, Path], dict[str, Path]]:
+    predictions = {path.name: path for path in pred_dir.glob("*.png")}
+    ground_truth = {path.name: path for path in gt_dir.glob("*.png")}
+    if not predictions:
+        raise RuntimeError(f"No prediction PNG files in {pred_dir}")
+    if expected_patient_ids is not None:
+        ground_truth = {
+            name: path
+            for name, path in ground_truth.items()
+            if patient_id_from_stem(path.stem) in expected_patient_ids
+        }
+    if predictions.keys() != ground_truth.keys():
+        missing_predictions = sorted(ground_truth.keys() - predictions.keys())
+        missing_ground_truth = sorted(predictions.keys() - ground_truth.keys())
+        raise RuntimeError(
+            f"Prediction/GT names differ. Missing predictions={missing_predictions[:5]}, "
+            f"missing ground truth={missing_ground_truth[:5]}"
+        )
+    return predictions, ground_truth
 
 
 def decode_mask(path: Path, classes: int, label_step: float) -> np.ndarray:
@@ -29,19 +60,12 @@ def evaluate_prediction_directory(
     gt_dir: Path,
     classes: int = 5,
     label_step: float = 63.0,
+    expected_patient_ids: set[str] | None = None,
 ) -> tuple[list[str], np.ndarray, list[dict[str, object]]]:
     """Return patient-level 3D Dice and detailed rows for one prediction folder."""
-    predictions = {p.name: p for p in pred_dir.glob("*.png")}
-    ground_truth = {p.name: p for p in gt_dir.glob("*.png")}
-    if not predictions:
-        raise RuntimeError(f"No prediction PNG files in {pred_dir}")
-    if predictions.keys() != ground_truth.keys():
-        missing_predictions = sorted(ground_truth.keys() - predictions.keys())
-        missing_ground_truth = sorted(predictions.keys() - ground_truth.keys())
-        raise RuntimeError(
-            f"Prediction/GT names differ. Missing predictions={missing_predictions[:5]}, "
-            f"missing ground truth={missing_ground_truth[:5]}"
-        )
+    predictions, ground_truth = matched_prediction_and_ground_truth(
+        pred_dir, gt_dir, expected_patient_ids
+    )
 
     intersections: dict[str, np.ndarray] = {}
     prediction_sizes: dict[str, np.ndarray] = {}
@@ -97,6 +121,7 @@ def evaluate_hd95_directory(
     classes: int = 5,
     label_step: float = 63.0,
     in_plane_spacing_scale: float = 1.0,
+    expected_patient_ids: set[str] | None = None,
 ) -> tuple[list[str], np.ndarray, list[dict[str, object]]]:
     """Return patient-level 3D surface HD95 values in millimetres.
 
@@ -108,17 +133,9 @@ def evaluate_hd95_directory(
     if not np.isfinite(in_plane_spacing_scale) or in_plane_spacing_scale <= 0:
         raise ValueError("in_plane_spacing_scale must be positive and finite")
 
-    predictions = {p.name: p for p in pred_dir.glob("*.png")}
-    ground_truth = {p.name: p for p in gt_dir.glob("*.png")}
-    if not predictions:
-        raise RuntimeError(f"No prediction PNG files in {pred_dir}")
-    if predictions.keys() != ground_truth.keys():
-        missing_predictions = sorted(ground_truth.keys() - predictions.keys())
-        missing_ground_truth = sorted(predictions.keys() - ground_truth.keys())
-        raise RuntimeError(
-            f"Prediction/GT names differ. Missing predictions={missing_predictions[:5]}, "
-            f"missing ground truth={missing_ground_truth[:5]}"
-        )
+    predictions, ground_truth = matched_prediction_and_ground_truth(
+        pred_dir, gt_dir, expected_patient_ids
+    )
 
     names_by_patient: dict[str, list[str]] = defaultdict(list)
     for name in predictions:
@@ -211,10 +228,26 @@ def main() -> None:
         ),
     )
     parser.add_argument("--csv", type=Path)
+    parser.add_argument(
+        "--split-file",
+        type=Path,
+        help="split.json; required when --gt-dir is the pooled label directory.",
+    )
+    parser.add_argument("--subset", choices=["train", "val", "test"], default="val")
     args = parser.parse_args()
 
+    expected_patient_ids = (
+        patient_ids_from_split(args.split_file, args.subset)
+        if args.split_file is not None
+        else None
+    )
+
     patient_ids, dice, rows = evaluate_prediction_directory(
-        args.pred_dir, args.gt_dir, args.classes, args.label_step
+        args.pred_dir,
+        args.gt_dir,
+        args.classes,
+        args.label_step,
+        expected_patient_ids,
     )
 
     print(f"Prediction directory: {args.pred_dir}")
@@ -234,6 +267,7 @@ def main() -> None:
             args.classes,
             args.label_step,
             args.in_plane_spacing_scale,
+            expected_patient_ids,
         )
         if hd95_patients != patient_ids:
             raise RuntimeError(f"HD95 patients differ: {hd95_patients} != {patient_ids}")

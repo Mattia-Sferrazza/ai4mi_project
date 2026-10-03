@@ -123,10 +123,11 @@ You can also create new conda environment in anaconda prompt
 
 <a id="getting-the-data"></a>
 ### Getting the data
-The synthetic dataset is generated randomly. For SegTHOR, put [`segthor_train_full.zip`](https://amsuni-my.sharepoint.com/:u:/g/personal/h_t_g_kervadec_uva_nl/IQAdjIjKmc4XRbIBQl9qeBs8AXOF-9Evw0v_lEbvLn2mUdE?e=lZev9Z) (requires a UvA account) in the `data/` folder. The full-data recipe verifies and extracts the archive, creates a deterministic 30/10 patient-level split, clips intensities to `[-1000, 1000]` HU, takes a centred 384 mm field of view, and resamples it to 256x256 at approximately 1.5 mm in-plane spacing. Split and transformation metadata are saved with the generated PNGs. Use `-p -1` to enable all available CPU cores (see `python -m preprocessing.slice_segthor --help`).
+The synthetic dataset is generated randomly. For SegTHOR, put [`segthor_train_full.zip`](https://amsuni-my.sharepoint.com/:u:/g/personal/h_t_g_kervadec_uva_nl/IQAdjIjKmc4XRbIBQl9qeBs8AXOF-9Evw0v_lEbvLn2mUdE?e=lZev9Z) (requires a UvA account) in the `data/` folder. The full-data recipe verifies and extracts the archive and creates one deterministic patient-level split: 28 training, 6 validation, and 6 labelled test patients. The test patients are sampled only from Patients 21–40 because Patients 1–20 were already used in preliminary experiments and are no longer an untouched test pool. Preprocessing clips intensities to `[-1000, 1000]` HU, takes a centred 384 mm field of view, and resamples it to 384x384 at approximately 1.0 mm in-plane spacing. This matches the native spacing of 36 of the 40 scans much more closely than the old 1.5 mm baseline. Each patient is preprocessed only once; `split.json` records the direct train/validation/test assignment. Split and transformation metadata are saved with the generated PNGs. Use `-p -1` to enable all available CPU cores (see `python -m preprocessing.slice_segthor --help`).
 ```
 $ make data/TOY2
 $ make data/SEGTHOR_FULL
+$ make data/SEGTHOR_FULL_CLAHE  # Only for the CLAHE ablation
 ```
 
 
@@ -143,10 +144,33 @@ $ unzip -q data/segthor_train_full.zip -d data/segthor_train_full
 $ python -m preprocessing.slice_segthor \
          --source_dir data/segthor_train_full \
          --dest_dir data/SEGTHOR_FULL \
-         --shape 256 256 --target-spacing 1.5 1.5 \
-         --window -1000 1000 --retains 10 --seed 0
+         --shape 384 384 --target-spacing 1.0 1.0 \
+         --window -1000 1000 --validation-count 6 --test-count 6 \
+         --test-pool-start 21 --split-seed 0
 $ python -m preprocessing.validate_processed_segthor data/SEGTHOR_FULL
+$ python -m preprocessing.preview_augmentations \
+         --data-dir data/SEGTHOR_FULL \
+         --output eda/preprocessing_figures/augmentation_preview.png
 ```
+
+For the augmentation study, train with `--loss ce_dice` and choose
+`--augmentation none` or `combined`. Augmentation is sampled online for
+training slices only; validation and test images are never augmented.
+
+The patient split seed is fixed at `0`. Use training seed `0` for the initial
+preprocessing screen. If a change appears useful, repeat the relevant pair with
+`--seed 1` and `--seed 2` before claiming an improvement. Training seeds control
+initialization, data-loader shuffling, workers, and online augmentation without
+changing the patient split. Each result directory receives a `run_config.json`
+recording both seeds and the PyTorch/CUDA versions.
+
+The preprocessing and augmentation components are architecture-independent.
+Peer models can reuse `SliceDataset(...)` and pass
+`build_augmentation("none" | "geometric" | "intensity" | "combined")` as its
+`joint_transform`; they do not need to use the reference ENet training script.
+`make data/SEGTHOR_FULL_CLAHE` also verifies that its split, spacing, filenames,
+and masks are identical to the non-CLAHE dataset and that only CT images change.
+Use `python -m preprocessing.preview_preprocessing_ablation` for visual QC.
 
 Patients 1–20 in the full archive are the same CT scans as the earlier partial dataset. Use the official full-dataset masks rather than appending the corrected partial dataset, which would duplicate patients across the cohort.
 
@@ -155,17 +179,10 @@ Patients 1–20 in the full archive are the same CT scans as the earlier partial
 Running a training
 ```
 $ python main.py --help
-usage: main.py [-h] [--epochs EPOCHS] [--dataset {TOY2,SEGTHOR}] [--mode {partial,full}] --dest DEST [--gpu] [--debug]
-
-options:
-  -h, --help            show this help message and exit
-  --epochs EPOCHS
-  --dataset {TOY2,SEGTHOR}
-  --mode {partial,full}
-  --dest DEST           Destination directory to save the results (predictions and weights).
-  --gpu
-  --debug               Keep only a fraction (10 samples) of the datasets, to test the logic around epochs and logging easily.
-$ python main.py --dataset TOY2 --mode full --epoch 25 --dest results/toy2/ce --gpu
+$ python main.py --help
+$ python main.py --dataset SEGTHOR_FULL --mode full --loss ce_dice \
+    --augmentation combined --seed 0 --epochs 25 \
+    --dest results/segthor_full/combined/seed0 --gpu
 ```
 
 The codebase uses a lot of assertions for control and self-documentation, they can easily be disabled with the `-O` option (for faster training) once everything is known to be correct (for instance run the previous command for 1/2 epochs, then kill it and relaunch it):

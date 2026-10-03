@@ -7,7 +7,7 @@ The preprocessing is deliberately light and reproducible:
 * clip CT values to a fixed Hounsfield-unit window and map it to uint8;
 * crop the same physical in-plane field of view from every scan;
 * resample images and labels to a common in-plane spacing;
-* split at patient level; and
+* define one fixed patient-level train/validation/test split; and
 * save the split, crop, intensity-window, and effective-spacing metadata.
 
 The crop never depends on the ground-truth mask, so the same transform can be
@@ -30,6 +30,7 @@ from typing import Callable, Sequence
 import nibabel as nib
 import numpy as np
 from skimage.io import imsave
+from skimage import exposure
 from skimage.transform import resize
 
 from utils import map_, tqdm_
@@ -52,6 +53,28 @@ def window_ct(
     clipped = np.clip(image.astype(np.float32), lower_hu, upper_hu)
     scaled = (clipped - lower_hu) * (255.0 / (upper_hu - lower_hu))
     return np.rint(scaled).astype(np.uint8)
+
+
+def apply_clahe(
+    image: np.ndarray,
+    kernel_size: int = 32,
+    clip_limit: float = 0.01,
+) -> np.ndarray:
+    """Apply deterministic CLAHE to one final-resolution uint8 CT slice."""
+
+    if image.ndim != 2 or image.dtype != np.uint8:
+        raise TypeError("CLAHE expects one 2-D uint8 image")
+    if kernel_size <= 0:
+        raise ValueError("CLAHE kernel_size must be positive")
+    if not 0 < clip_limit <= 1:
+        raise ValueError("CLAHE clip_limit must be in (0, 1]")
+    enhanced = exposure.equalize_adapthist(
+        image,
+        kernel_size=kernel_size,
+        clip_limit=clip_limit,
+        nbins=256,
+    )
+    return np.rint(enhanced * 255).astype(np.uint8)
 
 
 def centre_crop_bounds(
@@ -158,16 +181,12 @@ def slice_patient(
     shape: tuple[int, int],
     target_spacing: tuple[float, float],
     intensity_window: tuple[float, float],
-    test_mode: bool = False,
+    use_clahe: bool = False,
+    clahe_kernel_size: int = 32,
+    clahe_clip_limit: float = 0.01,
 ) -> dict[str, object]:
-    split_name = "test" if test_mode else "train"
-    id_path = source_path / split_name / id_
-    if test_mode:
-        directory_ct = id_path / f"{id_}.nii.gz"
-        flat_ct = source_path / "test" / f"{id_}.nii.gz"
-        ct_path = directory_ct if directory_ct.is_file() else flat_ct
-    else:
-        ct_path = id_path / f"{id_}.nii.gz"
+    id_path = source_path / "train" / id_
+    ct_path = id_path / f"{id_}.nii.gz"
 
     ct_image = nib.load(str(ct_path))
     ct = np.asanyarray(ct_image.dataobj)
@@ -177,28 +196,24 @@ def slice_patient(
     if orientation != "LPS":
         raise ValueError(f"{id_}: expected LPS orientation, found {orientation}")
 
-    gt: np.ndarray | None = None
-    if not test_mode:
-        gt_image = nib.load(str(id_path / "GT.nii.gz"))
-        gt = np.asanyarray(gt_image.dataobj)
-        sanity_gt(gt, ct)
-        if not np.allclose(ct_image.affine, gt_image.affine, atol=1e-5):
-            raise ValueError(f"{id_}: CT and GT affine matrices differ")
+    gt_image = nib.load(str(id_path / "GT.nii.gz"))
+    gt = np.asanyarray(gt_image.dataobj)
+    sanity_gt(gt, ct)
+    if not np.allclose(ct_image.affine, gt_image.affine, atol=1e-5):
+        raise ValueError(f"{id_}: CT and GT affine matrices differ")
 
     crop_shape = crop_shape_for_spacing(ct.shape, spacing, shape, target_spacing)
     cropped_ct, crop_bounds = centre_crop(ct, crop_shape)
-    cropped_gt: np.ndarray | None = None
-    if gt is not None:
-        cropped_gt, gt_bounds = centre_crop(gt, crop_shape)
-        if gt_bounds != crop_bounds:
-            raise AssertionError("CT and GT crop bounds differ")
-        original_foreground = int(np.count_nonzero(gt))
-        cropped_foreground = int(np.count_nonzero(cropped_gt))
-        if cropped_foreground != original_foreground:
-            raise ValueError(
-                f"{id_}: crop would discard "
-                f"{original_foreground - cropped_foreground} foreground voxels"
-            )
+    cropped_gt, gt_bounds = centre_crop(gt, crop_shape)
+    if gt_bounds != crop_bounds:
+        raise AssertionError("CT and GT crop bounds differ")
+    original_foreground = int(np.count_nonzero(gt))
+    cropped_foreground = int(np.count_nonzero(cropped_gt))
+    if cropped_foreground != original_foreground:
+        raise ValueError(
+            f"{id_}: crop would discard "
+            f"{original_foreground - cropped_foreground} foreground voxels"
+        )
 
     lower_hu, upper_hu = intensity_window
     processed_ct = window_ct(cropped_ct, lower_hu, upper_hu)
@@ -207,24 +222,28 @@ def slice_patient(
     image_dir = dest_path / "img"
     image_dir.mkdir(parents=True, exist_ok=True)
     label_dir = dest_path / "gt"
-    if not test_mode:
-        label_dir.mkdir(parents=True, exist_ok=True)
+    label_dir.mkdir(parents=True, exist_ok=True)
 
     for z_index in range(z_slices):
         image_slice = _resize_image(processed_ct[:, :, z_index], shape)
+        if use_clahe:
+            image_slice = apply_clahe(
+                image_slice,
+                kernel_size=clahe_kernel_size,
+                clip_limit=clahe_clip_limit,
+            )
         filename = f"{id_}_{z_index:04d}.png"
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=UserWarning)
             imsave(str(image_dir / filename), image_slice)
 
-        if cropped_gt is not None:
-            label_slice = _resize_label(cropped_gt[:, :, z_index], shape)
-            if not set(np.unique(label_slice).astype(int)).issubset(SEGTHOR_LABELS):
-                raise AssertionError(f"{id_}: label interpolation introduced invalid classes")
-            encoded_label = (label_slice * LABEL_PNG_SCALE).astype(np.uint8)
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=UserWarning)
-                imsave(str(label_dir / filename), encoded_label)
+        label_slice = _resize_label(cropped_gt[:, :, z_index], shape)
+        if not set(np.unique(label_slice).astype(int)).issubset(SEGTHOR_LABELS):
+            raise AssertionError(f"{id_}: label interpolation introduced invalid classes")
+        encoded_label = (label_slice * LABEL_PNG_SCALE).astype(np.uint8)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=UserWarning)
+            imsave(str(label_dir / filename), encoded_label)
 
     crop_x, crop_y = crop_shape
     output_x, output_y = shape
@@ -252,71 +271,147 @@ def slice_patient(
     }
 
 
-def _test_ids(source_path: Path) -> list[str]:
-    test_path = source_path / "test"
-    if not test_path.is_dir():
-        return []
-    patient_directories = sorted(path.name for path in test_path.glob("Patient_*") if path.is_dir())
-    if patient_directories:
-        return patient_directories
-    return sorted(Path(path.stem).stem for path in test_path.glob("*.nii.gz"))
-
-
-def get_splits(
+def get_patient_split(
     source_path: Path,
-    retains: int,
-    fold: int,
+    validation_count: int,
+    test_count: int,
     seed: int,
-) -> tuple[list[str], list[str], list[str]]:
+    test_pool_start: int | None = 21,
+) -> dict[str, object]:
+    """Create one deterministic, stratified train/validation/test split."""
+
     ids = sorted(path.name for path in (source_path / "train").glob("Patient_*") if path.is_dir())
     if not ids:
         raise RuntimeError(f"No Patient_* directories found in {source_path / 'train'}")
-    if retains <= 0 or retains >= len(ids):
-        raise ValueError(f"retains must be between 1 and {len(ids) - 1}")
-    if fold < 0 or (fold + 1) * retains > len(ids):
-        raise ValueError(f"Fold {fold} with {retains} validation patients exceeds {len(ids)} patients")
+    if test_count <= 0 or test_count >= len(ids):
+        raise ValueError(f"test_count must be between 1 and {len(ids) - 1}")
+    development_count = len(ids) - test_count
+    if validation_count <= 0 or validation_count >= development_count:
+        raise ValueError(
+            f"validation_count must be between 1 and {development_count - 1}"
+        )
 
-    shuffled_ids = ids.copy()
-    random.Random(seed).shuffle(shuffled_ids)
-    validation_slice = slice(fold * retains, (fold + 1) * retains)
-    validation_ids = shuffled_ids[validation_slice]
-    training_ids = [patient for patient in shuffled_ids if patient not in validation_ids]
-    test_ids = _test_ids(source_path)
+    if test_pool_start is None:
+        test_candidates = ids.copy()
+    else:
+        test_candidates = [
+            patient
+            for patient in ids
+            if int(patient.rsplit("_", maxsplit=1)[1]) >= test_pool_start
+        ]
+    if len(test_candidates) < test_count:
+        raise ValueError(
+            f"Only {len(test_candidates)} patients are eligible for a "
+            f"{test_count}-patient test set"
+        )
+
+    random_generator = random.Random(seed)
+    random_generator.shuffle(test_candidates)
+    test_ids = test_candidates[:test_count]
+    test_set = set(test_ids)
+    if test_pool_start is None:
+        development_strata = [[patient for patient in ids if patient not in test_set]]
+    else:
+        preliminary_ids = [
+            patient
+            for patient in ids
+            if int(patient.rsplit("_", maxsplit=1)[1]) < test_pool_start
+        ]
+        new_development_ids = [
+            patient for patient in test_candidates if patient not in test_set
+        ]
+        development_strata = [preliminary_ids, new_development_ids]
+    for stratum in development_strata:
+        random_generator.shuffle(stratum)
+
+    exact_allocations = [
+        validation_count * len(stratum) / development_count
+        for stratum in development_strata
+    ]
+    validation_allocations = [int(value) for value in exact_allocations]
+    remaining = validation_count - sum(validation_allocations)
+    allocation_order = sorted(
+        range(len(development_strata)),
+        key=lambda index: exact_allocations[index] - validation_allocations[index],
+        reverse=True,
+    )
+    for index in allocation_order[:remaining]:
+        validation_allocations[index] += 1
+
+    validation_ids = [
+        patient
+        for stratum, count in zip(development_strata, validation_allocations)
+        for patient in stratum[:count]
+    ]
+    training_ids = [
+        patient
+        for stratum, count in zip(development_strata, validation_allocations)
+        for patient in stratum[count:]
+    ]
+    random_generator.shuffle(training_ids)
+    random_generator.shuffle(validation_ids)
 
     print(f"Found {len(ids)} labelled patients")
     print(f"Training patients ({len(training_ids)}): {training_ids}")
     print(f"Validation patients ({len(validation_ids)}): {validation_ids}")
-    print(f"Test patients ({len(test_ids)}): {test_ids}")
-    return training_ids, validation_ids, test_ids
+    print(f"Fixed test patients ({len(test_ids)}): {test_ids}")
+    return {
+        "seed": seed,
+        "training_patient_count": len(training_ids),
+        "validation_patient_count": validation_count,
+        "test_patient_count": test_count,
+        "test_pool_start": test_pool_start,
+        "train": training_ids,
+        "val": validation_ids,
+        "test": test_ids,
+    }
 
 
-def _process_split(
-    split_ids: list[str],
+def get_splits(
+    source_path: Path,
+    validation_count: int = 6,
+    test_count: int = 6,
+    seed: int = 0,
+    test_pool_start: int | None = 21,
+) -> tuple[list[str], list[str], list[str]]:
+    """Return the fixed train, validation and test patient IDs."""
+
+    manifest = get_patient_split(
+        source_path, validation_count, test_count, seed, test_pool_start
+    )
+    return list(manifest["train"]), list(manifest["val"]), list(manifest["test"])
+
+
+def _process_patients(
+    patient_ids: list[str],
     *,
-    mode: str,
     dest_path: Path,
     source_path: Path,
     shape: tuple[int, int],
     target_spacing: tuple[float, float],
     intensity_window: tuple[float, float],
+    use_clahe: bool,
+    clahe_kernel_size: int,
+    clahe_clip_limit: float,
     process_count: int,
 ) -> list[dict[str, object]]:
-    if not split_ids:
+    if not patient_ids:
         return []
 
-    split_destination = dest_path / mode
-    print(f"Slicing {len(split_ids)} patients to {split_destination}")
+    print(f"Slicing {len(patient_ids)} patients to {dest_path}")
     process_patient: Callable = partial(
         slice_patient,
-        dest_path=split_destination,
+        dest_path=dest_path,
         source_path=source_path,
         shape=shape,
         target_spacing=target_spacing,
         intensity_window=intensity_window,
-        test_mode=mode == "test",
+        use_clahe=use_clahe,
+        clahe_kernel_size=clahe_kernel_size,
+        clahe_clip_limit=clahe_clip_limit,
     )
 
-    iterator = tqdm_(split_ids)
+    iterator = tqdm_(patient_ids)
     if process_count == 1:
         return list(map(process_patient, iterator))
     if process_count == -1:
@@ -337,26 +432,32 @@ def main(args: argparse.Namespace) -> None:
     shape = tuple(args.shape)
     target_spacing = tuple(args.target_spacing)
     intensity_window = tuple(args.window)
-    training_ids, validation_ids, test_ids = get_splits(
-        source_path, args.retains, args.fold, args.seed
+    split_manifest = get_patient_split(
+        source_path,
+        args.validation_count,
+        args.test_count,
+        args.split_seed,
+        args.test_pool_start,
+    )
+    all_ids = (
+        list(split_manifest["train"])
+        + list(split_manifest["val"])
+        + list(split_manifest["test"])
     )
 
     dest_path.mkdir(parents=True)
-    split_map = {"train": training_ids, "val": validation_ids, "test": test_ids}
-    all_metadata: list[dict[str, object]] = []
-    for mode, split_ids in split_map.items():
-        all_metadata.extend(
-            _process_split(
-                split_ids,
-                mode=mode,
-                dest_path=dest_path,
-                source_path=source_path,
-                shape=shape,
-                target_spacing=target_spacing,
-                intensity_window=intensity_window,
-                process_count=args.process,
-            )
-        )
+    all_metadata = _process_patients(
+        all_ids,
+        dest_path=dest_path,
+        source_path=source_path,
+        shape=shape,
+        target_spacing=target_spacing,
+        intensity_window=intensity_window,
+        use_clahe=args.clahe,
+        clahe_kernel_size=args.clahe_kernel_size,
+        clahe_clip_limit=args.clahe_clip_limit,
+        process_count=args.process,
+    )
 
     spacing = {
         str(row["patient"]): tuple(row["effective_spacing_mm"])
@@ -366,16 +467,7 @@ def main(args: argparse.Namespace) -> None:
         pickle.dump(spacing, spacing_file, pickle.HIGHEST_PROTOCOL)
 
     with (dest_path / "split.json").open("w", encoding="utf-8") as split_file:
-        json.dump(
-            {
-                "seed": args.seed,
-                "fold": args.fold,
-                "validation_patient_count": args.retains,
-                **split_map,
-            },
-            split_file,
-            indent=2,
-        )
+        json.dump(split_manifest, split_file, indent=2)
 
     with (dest_path / "preprocessing.json").open("w", encoding="utf-8") as config_file:
         json.dump(
@@ -388,6 +480,12 @@ def main(args: argparse.Namespace) -> None:
                     float(shape[1] * target_spacing[1]),
                 ],
                 "intensity_window_hu": list(intensity_window),
+                "clahe": {
+                    "enabled": bool(args.clahe),
+                    "kernel_size": args.clahe_kernel_size,
+                    "clip_limit": args.clahe_clip_limit,
+                    "application_stage": "after resize, independently per axial slice",
+                },
                 "image_interpolation_order": 1,
                 "label_interpolation_order": 0,
                 "patients": all_metadata,
@@ -405,14 +503,14 @@ def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source_dir", type=Path, required=True)
     parser.add_argument("--dest_dir", type=Path, required=True)
-    parser.add_argument("--shape", type=int, nargs=2, default=[256, 256])
+    parser.add_argument("--shape", type=int, nargs=2, default=[384, 384])
     parser.add_argument(
         "--target-spacing",
         type=float,
         nargs=2,
-        default=[1.5, 1.5],
+        default=[1.0, 1.0],
         metavar=("X_MM", "Y_MM"),
-        help="Requested output in-plane spacing in millimetres (default: 1.5 1.5).",
+        help="Requested output in-plane spacing in millimetres (default: 1.0 1.0).",
     )
     parser.add_argument(
         "--window",
@@ -423,13 +521,44 @@ def get_args() -> argparse.Namespace:
         help="Fixed CT intensity window before uint8 conversion.",
     )
     parser.add_argument(
-        "--retains",
-        type=int,
-        default=10,
-        help="Number of patients retained for validation (default: 10 of 40).",
+        "--clahe",
+        action="store_true",
+        help="Apply deterministic slice-wise CLAHE after HU windowing and resizing.",
     )
-    parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--fold", type=int, default=0)
+    parser.add_argument("--clahe-kernel-size", type=int, default=32)
+    parser.add_argument("--clahe-clip-limit", type=float, default=0.01)
+    parser.add_argument(
+        "--validation-count",
+        type=int,
+        default=6,
+        help="Number of patients used for validation (default: 6).",
+    )
+    parser.add_argument(
+        "--test-count",
+        type=int,
+        default=6,
+        help="Number of patients held out for final testing (default: 6).",
+    )
+    parser.add_argument(
+        "--test-pool-start",
+        type=int,
+        default=21,
+        help=(
+            "Only patient numbers at or above this value are eligible for the test set "
+            "(default: 21, because Patients 1-20 were used in preliminary work)."
+        ),
+    )
+    parser.add_argument(
+        "--split-seed",
+        "--seed",
+        dest="split_seed",
+        type=int,
+        default=0,
+        help=(
+            "Seed used only to create the fixed patient split (default: 0). "
+            "Do not vary this with training run seeds."
+        ),
+    )
     parser.add_argument(
         "--process",
         "-p",

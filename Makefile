@@ -36,15 +36,30 @@ data/SEGTHOR:
 	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
 	rm -rf $@_tmp $@
 	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/segthor_part1 --dest_dir $@_tmp \
-		--shape 256 256 --target-spacing 1.5 1.5 --window -1000 1000 --retains 5
+		--shape 384 384 --target-spacing 1.0 1.0 --window -1000 1000 \
+		--validation-count 4 --test-count 4 --test-pool-start 1
 	mv $@_tmp $@
 
-## Full clean dataset: 30 training patients and 10 validation patients
+## Full clean dataset: 28 train, 6 validation, and 6 held-out test patients
 data/SEGTHOR_FULL: data/segthor_train_full
 	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
 	rm -rf $@_tmp $@
 	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/segthor_train_full --dest_dir $@_tmp \
-		--shape 256 256 --target-spacing 1.5 1.5 --window -1000 1000 --retains 10 --seed 0
+		--shape 384 384 --target-spacing 1.0 1.0 --window -1000 1000 \
+		--validation-count 6 --test-count 6 --test-pool-start 21 --split-seed 0
+	python -m preprocessing.validate_processed_segthor $@_tmp
+	mv $@_tmp $@
+
+## Identical patient split and geometry, with deterministic slice-wise CLAHE
+data/SEGTHOR_FULL_CLAHE: data/segthor_train_full data/SEGTHOR_FULL
+	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
+	rm -rf $@_tmp $@
+	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/segthor_train_full --dest_dir $@_tmp \
+		--shape 384 384 --target-spacing 1.0 1.0 --window -1000 1000 \
+		--clahe --clahe-kernel-size 32 --clahe-clip-limit 0.01 \
+		--validation-count 6 --test-count 6 --test-pool-start 21 --split-seed 0
+	python -m preprocessing.validate_processed_segthor $@_tmp
+	python -m preprocessing.validate_preprocessing_ablation data/SEGTHOR_FULL $@_tmp
 	mv $@_tmp $@
 
 ## Corrected ground truth
@@ -53,5 +68,6 @@ data/SEGTHOR_CORRECTED:
 	find data/correct_data -name '.DS_Store' -delete
 	rm -rf $@_tmp $@
 	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/correct_data --dest_dir $@_tmp \
-		--shape 256 256 --target-spacing 1.5 1.5 --window -1000 1000 --retains 5
+		--shape 384 384 --target-spacing 1.0 1.0 --window -1000 1000 \
+		--validation-count 4 --test-count 4 --test-pool-start 1
 	mv $@_tmp $@

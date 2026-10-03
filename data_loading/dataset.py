@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
+import re
 from pathlib import Path
 from typing import Callable, Union
 
@@ -30,39 +32,76 @@ from PIL import Image
 from torch.utils.data import Dataset
 
 
+PATIENT_PATTERN = re.compile(r"^(Patient_\d+)_\d+$")
+
+
+def patient_from_slice(path: Path) -> str:
+    match = PATIENT_PATTERN.fullmatch(path.stem)
+    if match is None:
+        raise ValueError(f"Unexpected SegTHOR slice filename: {path.name}")
+    return match.group(1)
+
+
+def patient_ids_for_subset(root: Path, subset: str) -> set[str] | None:
+    """Return IDs from a pooled split manifest, or ``None`` for legacy folders."""
+
+    split_path = root / "split.json"
+    pooled_images = root / "img"
+    if not split_path.is_file() or not pooled_images.is_dir():
+        return None
+
+    split = json.loads(split_path.read_text(encoding="utf-8"))
+    return set(split[subset])
+
+
 def make_dataset(root, subset) -> list[tuple[Path, Path | None]]:
     assert subset in ['train', 'val', 'test']
 
     root = Path(root)
     print(f"> {root=}")
 
-    img_path = root / subset / 'img'
-    full_path = root / subset / 'gt'
+    selected_patients = patient_ids_for_subset(root, subset)
+    if selected_patients is None:
+        img_path = root / subset / 'img'
+        full_path = root / subset / 'gt'
+    else:
+        img_path = root / 'img'
+        full_path = root / 'gt'
 
     images: list[Path] = sorted(img_path.glob("*.png"))
-    full_labels: list[Path | None]
-    if subset != 'test':
-        full_labels = sorted(full_path.glob("*.png"))
+    if selected_patients is not None:
+        images = [path for path in images if patient_from_slice(path) in selected_patients]
+
+    labels_by_name = {path.name: path for path in full_path.glob("*.png")}
+    if labels_by_name:
+        missing = [path.name for path in images if path.name not in labels_by_name]
+        if missing:
+            raise RuntimeError(f"Missing labels for {len(missing)} images; first: {missing[0]}")
+        full_labels: list[Path | None] = [labels_by_name[path.name] for path in images]
     else:
         full_labels = [None] * len(images)
+
+    if not images:
+        raise RuntimeError(f"No images found for subset={subset!r}, root={root}")
 
     return list(zip(images, full_labels))
 
 
 class SliceDataset(Dataset):
     def __init__(self, subset, root_dir, img_transform=None,
-                 gt_transform=None, augment=False, equalize=False, debug=False):
+                 gt_transform=None, joint_transform=None,
+                 augment=False, equalize=False, debug=False):
         self.root_dir: str = root_dir
         self.img_transform: Callable = img_transform
         self.gt_transform: Callable = gt_transform
+        self.joint_transform: Callable | None = joint_transform
         self.augmentation: bool = augment
         self.equalize: bool = equalize
-
-        self.test_mode: bool = subset == 'test'
 
         self.files = make_dataset(root_dir, subset)
         if debug:
             self.files = self.files[:10]
+        self.has_labels = all(gt_path is not None for _, gt_path in self.files)
 
         print(f">> Created {subset} dataset with {len(self)} images...")
 
@@ -77,8 +116,11 @@ class SliceDataset(Dataset):
         data_dict = {"images": img,
                      "stems": img_path.stem}
 
-        if not self.test_mode:
+        if self.has_labels:
             gt: Tensor = self.gt_transform(Image.open(gt_path))
+
+            if self.joint_transform is not None:
+                img, gt = self.joint_transform(img, gt)
 
             _, W, H = img.shape
             K, _, _ = gt.shape

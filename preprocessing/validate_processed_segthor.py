@@ -42,8 +42,14 @@ def validate(processed_dir: Path) -> dict[str, object]:
     train_ids = set(split["train"])
     validation_ids = set(split["val"])
     test_ids = set(split["test"])
+    if len(train_ids) != split["training_patient_count"]:
+        raise AssertionError("The saved training cohort size is incorrect")
+    if len(validation_ids) != split["validation_patient_count"]:
+        raise AssertionError("The saved validation cohort size is incorrect")
+    if len(test_ids) != split["test_patient_count"]:
+        raise AssertionError("The saved test cohort size differs from test_patient_count")
     if train_ids & validation_ids or train_ids & test_ids or validation_ids & test_ids:
-        raise AssertionError("Patient-level splits overlap")
+        raise AssertionError("Train, validation, and test patients overlap")
 
     patient_metadata = {row["patient"]: row for row in metadata["patients"]}
     expected_ids = train_ids | validation_ids | test_ids
@@ -56,54 +62,49 @@ def validate(processed_dir: Path) -> dict[str, object]:
     requested_spacing = np.asarray(metadata["requested_in_plane_spacing_mm"], dtype=float)
     seen_ids: set[str] = set()
 
-    for subset, subset_ids in (("train", train_ids), ("val", validation_ids), ("test", test_ids)):
-        if not subset_ids:
-            continue
-        image_files = sorted((processed_dir / subset / "img").glob("*.png"))
-        label_files = sorted((processed_dir / subset / "gt").glob("*.png"))
-        image_stems = {path.stem for path in image_files}
-        label_stems = {path.stem for path in label_files}
-        if subset != "test" and image_stems != label_stems:
-            raise AssertionError(f"{subset}: image/label filenames do not match")
-        if subset == "test" and label_files:
-            raise AssertionError("Test split unexpectedly contains labels")
+    image_files = sorted((processed_dir / "img").glob("*.png"))
+    label_files = sorted((processed_dir / "gt").glob("*.png"))
+    image_stems = {path.stem for path in image_files}
+    label_stems = {path.stem for path in label_files}
+    if image_stems != label_stems:
+        raise AssertionError("Image/label filenames do not match")
 
-        patient_slice_counts: dict[str, int] = defaultdict(int)
-        patient_label_values: dict[str, set[int]] = defaultdict(set)
-        for image_path in image_files:
-            patient = patient_from_stem(image_path.stem)
-            if patient not in subset_ids:
-                raise AssertionError(f"{patient} was written to the wrong split")
-            image = np.asarray(Image.open(image_path))
-            if image.shape != output_shape:
-                raise AssertionError(f"{image_path}: found shape {image.shape}, expected {output_shape}")
-            if image.dtype != np.uint8:
-                raise AssertionError(f"{image_path}: expected uint8, found {image.dtype}")
-            patient_slice_counts[patient] += 1
-            seen_ids.add(patient)
+    patient_slice_counts: dict[str, int] = defaultdict(int)
+    patient_label_values: dict[str, set[int]] = defaultdict(set)
+    for image_path in image_files:
+        patient = patient_from_stem(image_path.stem)
+        if patient not in expected_ids:
+            raise AssertionError(f"Unexpected patient in processed images: {patient}")
+        image = np.asarray(Image.open(image_path))
+        if image.shape != output_shape:
+            raise AssertionError(f"{image_path}: found shape {image.shape}, expected {output_shape}")
+        if image.dtype != np.uint8:
+            raise AssertionError(f"{image_path}: expected uint8, found {image.dtype}")
+        patient_slice_counts[patient] += 1
+        seen_ids.add(patient)
 
-        for label_path in label_files:
-            patient = patient_from_stem(label_path.stem)
-            label = np.asarray(Image.open(label_path))
-            if label.shape != output_shape:
-                raise AssertionError(f"{label_path}: found shape {label.shape}, expected {output_shape}")
-            values = set(np.unique(label).astype(int))
-            if not values.issubset(ENCODED_LABELS):
-                raise AssertionError(f"{label_path}: unexpected encoded labels {sorted(values)}")
-            patient_label_values[patient].update(values)
+    for label_path in label_files:
+        patient = patient_from_stem(label_path.stem)
+        label = np.asarray(Image.open(label_path))
+        if label.shape != output_shape:
+            raise AssertionError(f"{label_path}: found shape {label.shape}, expected {output_shape}")
+        values = set(np.unique(label).astype(int))
+        if not values.issubset(ENCODED_LABELS):
+            raise AssertionError(f"{label_path}: unexpected encoded labels {sorted(values)}")
+        patient_label_values[patient].update(values)
 
-        for patient in subset_ids:
-            expected_slices = int(patient_metadata[patient]["output_shape"][2])
-            if patient_slice_counts[patient] != expected_slices:
-                raise AssertionError(
-                    f"{patient}: found {patient_slice_counts[patient]} slices, expected {expected_slices}"
-                )
-            if subset != "test" and not FOREGROUND_LABELS.issubset(patient_label_values[patient]):
-                missing = sorted(FOREGROUND_LABELS - patient_label_values[patient])
-                raise AssertionError(f"{patient}: processed labels are missing {missing}")
+    for patient in expected_ids:
+        expected_slices = int(patient_metadata[patient]["output_shape"][2])
+        if patient_slice_counts[patient] != expected_slices:
+            raise AssertionError(
+                f"{patient}: found {patient_slice_counts[patient]} slices, expected {expected_slices}"
+            )
+        if not FOREGROUND_LABELS.issubset(patient_label_values[patient]):
+            missing = sorted(FOREGROUND_LABELS - patient_label_values[patient])
+            raise AssertionError(f"{patient}: processed labels are missing {missing}")
 
-        total_images += len(image_files)
-        total_labels += len(label_files)
+    total_images = len(image_files)
+    total_labels = len(label_files)
 
     if seen_ids != expected_ids:
         raise AssertionError(f"Missing processed patients: {sorted(expected_ids - seen_ids)}")
@@ -115,12 +116,14 @@ def validate(processed_dir: Path) -> dict[str, object]:
 
     return {
         "patients": len(expected_ids),
+        "split_seed": split["seed"],
         "training_patients": len(train_ids),
         "validation_patients": len(validation_ids),
         "test_patients": len(test_ids),
         "image_slices": total_images,
         "label_slices": total_labels,
         "output_shape": list(output_shape),
+        "clahe_enabled": bool(metadata.get("clahe", {}).get("enabled", False)),
         "effective_spacing_x_mm_range": [
             float(effective_xy[:, 0].min()),
             float(effective_xy[:, 0].max()),
