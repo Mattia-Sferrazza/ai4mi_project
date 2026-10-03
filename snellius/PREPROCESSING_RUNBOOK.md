@@ -9,6 +9,7 @@ six-patient test cohort is never evaluated during these decisions.
 - `preprocess_full_segthor.sbatch`: extract, preprocess, validate, and render QC
 - `train_preprocessing_experiment.sbatch`: one generic GPU training/evaluation job
 - `submit_preprocessing_pair.sh`: submit two matched conditions for one or more seeds
+- `submit_augmentation_screen.sh`: submit geometric, intensity, and combined augmentation
 - `show_preprocessing_results.sh`: print completed summaries and HD95 results
 
 ## Experiment sequence
@@ -19,9 +20,10 @@ six-patient test cohort is never evaluated during these decisions.
 4. Submit HU-only versus CLAHE, seed 0, for 25 epochs.
 5. Select the preprocessing variant using validation 3-D Dice, per-organ Dice,
    HD95, curves, and qualitative predictions.
-6. Submit no augmentation versus combined augmentation, seed 0, for 25 epochs.
-7. Only if a condition looks useful, repeat its matched comparison with seeds
-   1 and 2.
+6. Reuse the seed-0 no-augmentation baseline and submit geometric-only,
+   intensity-only, and combined augmentation simultaneously for 25 epochs.
+7. Only if a condition looks useful, repeat the winner and no augmentation
+   with seeds 1 and 2.
 
 ## Pair commands
 
@@ -43,17 +45,15 @@ bash snellius/submit_preprocessing_pair.sh \
   clahe_screen_seed0 0 25
 ```
 
-Augmentation screen, assuming HU-only was selected:
+Augmentation screen, assuming HU-only was selected, consists of three jobs:
 
 ```bash
-bash snellius/submit_preprocessing_pair.sh \
-  SEGTHOR_FULL none \
-  SEGTHOR_FULL combined \
-  augmentation_screen_seed0 0 25
+bash snellius/submit_augmentation_screen.sh \
+  SEGTHOR_FULL augmentation_screen_seed0 0 25
 ```
 
-If CLAHE was selected, replace both `SEGTHOR_FULL` arguments in the previous
-command with `SEGTHOR_FULL_CLAHE`.
+If CLAHE was selected, replace `DATASET=SEGTHOR_FULL` with
+`DATASET=SEGTHOR_FULL_CLAHE`.
 
 Example confirmation with seeds 1 and 2:
 

@@ -30,13 +30,13 @@ class SegmentationAugmentation:
     intensity: bool = True
     geometric_probability: float = 0.5
     intensity_probability: float = 0.5
-    max_rotation_degrees: float = 10.0
-    max_translation_fraction: float = 0.05
+    max_rotation_degrees: float = 5.0
+    max_translation_fraction: float = 0.03
     scale_range: tuple[float, float] = (0.9, 1.1)
-    brightness_delta: float = 0.05
-    contrast_range: tuple[float, float] = (0.9, 1.1)
-    gamma_range: tuple[float, float] = (0.9, 1.1)
-    max_noise_sigma: float = 0.02
+    brightness_delta: float = 0.02
+    contrast_range: tuple[float, float] = (0.95, 1.05)
+    gamma_range: tuple[float, float] = (0.95, 1.05)
+    max_noise_sigma: float = 0.01
 
     def __post_init__(self) -> None:
         for name, probability in (

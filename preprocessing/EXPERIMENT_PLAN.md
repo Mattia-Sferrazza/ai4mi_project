@@ -83,12 +83,16 @@ Using the selected preprocessing variant, compare with seed 0:
 1. `none`
 2. `combined`
 
-`combined` uses rotations up to 10 degrees, translations up to 5%, scaling
-from 0.9 to 1.1, brightness shifts up to 0.05, contrast/gamma from 0.9 to 1.1,
-and Gaussian noise sigma up to 0.02. Geometric and intensity groups each have
-probability 0.5. Spatial parameters are shared by CT and mask, and mask
-interpolation is nearest-neighbour. Augmentation is online and applied only to
-training samples; validation and test are never augmented.
+`combined` uses rotations up to 5 degrees, translations up to 3%, scaling from
+0.9 to 1.1, brightness shifts up to 0.02, contrast/gamma from 0.95 to 1.05,
+and Gaussian noise sigma up to 0.01. At the fixed HU window these correspond to
+about 11.5 mm translation, 40 HU brightness shift, and 20 HU maximum noise.
+These limits were selected from the measured positioning, organ-size,
+intensity, noise, and crop-margin variation in all 40 source scans. Geometric
+and intensity groups each have probability 0.5. Spatial parameters are shared
+by CT and mask, and mask interpolation is nearest-neighbour. Augmentation is
+online and applied only to training samples; validation and test are never
+augmented.
 
 If augmentation improves validation performance, repeat `none` and `combined`
 with seeds 1 and 2. The final deliverable is the selected deterministic

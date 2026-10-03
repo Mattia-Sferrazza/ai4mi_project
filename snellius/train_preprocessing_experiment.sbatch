@@ -12,7 +12,7 @@
 set -euo pipefail
 
 : "${DATASET:?Set DATASET to SEGTHOR_FULL or SEGTHOR_FULL_CLAHE}"
-: "${AUGMENTATION:?Set AUGMENTATION to none or combined}"
+: "${AUGMENTATION:?Set AUGMENTATION to none, geometric, intensity, or combined}"
 : "${RUN_TAG:?Set a unique RUN_TAG}"
 
 SEED="${SEED:-0}"
@@ -25,7 +25,7 @@ case "$DATASET" in
     *) echo "Unsupported DATASET=$DATASET" >&2; exit 2 ;;
 esac
 case "$AUGMENTATION" in
-    none|combined) ;;
+    none|geometric|intensity|combined) ;;
     *) echo "Unsupported AUGMENTATION=$AUGMENTATION" >&2; exit 2 ;;
 esac
 if ! [[ "$SEED" =~ ^[0-9]+$ && "$EPOCHS" =~ ^[1-9][0-9]*$ ]]; then

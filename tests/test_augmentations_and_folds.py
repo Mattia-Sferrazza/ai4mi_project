@@ -85,6 +85,17 @@ class SegmentationAugmentationTests(unittest.TestCase):
     def test_none_mode_disables_augmentation(self):
         self.assertIsNone(build_augmentation("none"))
 
+    def test_default_strengths_match_cohort_based_limits(self):
+        transform = SegmentationAugmentation()
+
+        self.assertEqual(transform.max_rotation_degrees, 5.0)
+        self.assertEqual(transform.max_translation_fraction, 0.03)
+        self.assertEqual(transform.scale_range, (0.9, 1.1))
+        self.assertEqual(transform.brightness_delta, 0.02)
+        self.assertEqual(transform.contrast_range, (0.95, 1.05))
+        self.assertEqual(transform.gamma_range, (0.95, 1.05))
+        self.assertEqual(transform.max_noise_sigma, 0.01)
+
     def test_geometric_transform_preserves_valid_one_hot_mask(self):
         transform = SegmentationAugmentation(
             geometric=True,

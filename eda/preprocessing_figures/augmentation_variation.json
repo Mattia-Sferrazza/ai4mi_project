@@ -1,0 +1,2667 @@
+{
+  "summary": {
+    "patients": 40,
+    "body_offset_x_mm": {
+      "minimum": -23.46303797528521,
+      "p05": -7.110033588830262,
+      "median": -1.4187552999568078,
+      "p95": 3.361733863563569,
+      "maximum": 6.8095088125274845
+    },
+    "body_offset_y_mm": {
+      "minimum": -31.48784266052069,
+      "p05": -21.969929999517642,
+      "median": 4.851803309694399,
+      "p95": 41.4271727800501,
+      "maximum": 69.80030439515635
+    },
+    "absolute_body_offset_x_mm": {
+      "minimum": 0.13530970827369748,
+      "p05": 0.4968028923916851,
+      "median": 2.4799829143242578,
+      "p95": 7.110033588830257,
+      "maximum": 23.46303797528521
+    },
+    "absolute_body_offset_y_mm": {
+      "minimum": 0.09603938015467917,
+      "p05": 0.8203438482943298,
+      "median": 13.309622486872609,
+      "p95": 41.4271727800501,
+      "maximum": 69.80030439515635
+    },
+    "body_roll_degrees": {
+      "minimum": 0.4240876493572614,
+      "p05": 0.5829254720508544,
+      "median": 1.5827750082904046,
+      "p95": 3.102887546725419,
+      "maximum": 4.575797000752779
+    },
+    "body_x_mm": {
+      "minimum": 303.2225081920624,
+      "p05": 329.49202661514283,
+      "median": 383.7888751029968,
+      "p95": 383.7890625,
+      "maximum": 384.17982149124146
+    },
+    "body_y_mm": {
+      "minimum": 203.61318182945251,
+      "p05": 212.9149351000786,
+      "median": 255.37109375,
+      "p95": 299.8680306315422,
+      "maximum": 325.68343472480774
+    },
+    "noise_sigma_hu": {
+      "minimum": 7.412999999999999,
+      "p05": 7.412999999999999,
+      "median": 9.6369,
+      "p95": 17.7912,
+      "maximum": 18.5325
+    },
+    "foreground_offset_x_mm": {
+      "minimum": -9.520339368118215,
+      "p05": 7.007874703250435,
+      "median": 18.04732872209184,
+      "p95": 32.83587050230087,
+      "maximum": 38.62170498059985
+    },
+    "foreground_offset_y_mm": {
+      "minimum": -68.31668830748627,
+      "p05": -55.61255846514276,
+      "median": -31.813657026117795,
+      "p95": 9.301361612506419,
+      "maximum": 32.50769967955833
+    },
+    "minimum_foreground_margin_mm": {
+      "minimum": 45.898415088653564,
+      "p05": 50.63474206924438,
+      "median": 83.00777196884155,
+      "p95": 115.38080303668976,
+      "maximum": 119.1405668258667
+    },
+    "organs": {
+      "esophagus": {
+        "median_hu": {
+          "minimum": -3.0,
+          "p05": 8.75,
+          "median": 22.0,
+          "p95": 50.05,
+          "maximum": 64.0
+        },
+        "iqr_hu": {
+          "minimum": 28.0,
+          "p05": 34.8,
+          "median": 50.0,
+          "p95": 99.59999999999928,
+          "maximum": 377.0
+        },
+        "offset_x_mm": {
+          "minimum": -16.027478794460606,
+          "p05": -7.047884661481098,
+          "median": 3.1930917447737803,
+          "p95": 18.42068423158197,
+          "maximum": 21.737790108124337
+        },
+        "offset_y_mm": {
+          "minimum": -19.675829459138775,
+          "p05": -17.16747431269846,
+          "median": 8.389704642007349,
+          "p95": 36.70766721520094,
+          "maximum": 70.65625617010372
+        },
+        "extent_x_mm": {
+          "minimum": 33.20310878753662,
+          "p05": 37.98826270103454,
+          "median": 46.8749885559082,
+          "p95": 61.13552219867705,
+          "maximum": 68.35934162139893
+        },
+        "extent_y_mm": {
+          "minimum": 39.06248092651367,
+          "p05": 41.015625,
+          "median": 60.058579206466675,
+          "p95": 85.10738031864166,
+          "maximum": 100.5858883857727
+        }
+      },
+      "heart": {
+        "median_hu": {
+          "minimum": -4.0,
+          "p05": 21.75,
+          "median": 38.0,
+          "p95": 149.49999999999997,
+          "maximum": 174.0
+        },
+        "iqr_hu": {
+          "minimum": 24.0,
+          "p05": 25.95,
+          "median": 55.0,
+          "p95": 128.74999999999994,
+          "maximum": 146.0
+        },
+        "offset_x_mm": {
+          "minimum": -7.616058937719378,
+          "p05": 6.342772582976241,
+          "median": 21.282698725670524,
+          "p95": 38.75559769240376,
+          "maximum": 45.105180270334884
+        },
+        "offset_y_mm": {
+          "minimum": -83.62119112806694,
+          "p05": -70.5949165125408,
+          "median": -43.00647487985306,
+          "p95": -4.136594677836208,
+          "maximum": 19.49351351625423
+        },
+        "extent_x_mm": {
+          "minimum": 104.49213647842407,
+          "p05": 118.01752049922943,
+          "median": 144.0429334640503,
+          "p95": 171.6309114694595,
+          "maximum": 186.52334642410278
+        },
+        "extent_y_mm": {
+          "minimum": 94.72651624679565,
+          "p05": 99.36518585681915,
+          "median": 120.11712884902954,
+          "p95": 146.04485056400296,
+          "maximum": 175.78116416931152
+        }
+      },
+      "trachea": {
+        "median_hu": {
+          "minimum": -985.0,
+          "p05": -972.35,
+          "median": -917.5,
+          "p95": -824.2000000000002,
+          "maximum": -749.0
+        },
+        "iqr_hu": {
+          "minimum": 76.0,
+          "p05": 82.95,
+          "median": 219.0,
+          "p95": 512.35,
+          "maximum": 529.0
+        },
+        "offset_x_mm": {
+          "minimum": -34.915923694769546,
+          "p05": -13.666211960226164,
+          "median": -4.093968670301768,
+          "p95": 6.200168796920836,
+          "maximum": 9.209358032800514
+        },
+        "offset_y_mm": {
+          "minimum": -35.974297564894606,
+          "p05": -27.078854667970646,
+          "median": -5.081456604865226,
+          "p95": 25.6385452886236,
+          "maximum": 51.40796424262526
+        },
+        "extent_x_mm": {
+          "minimum": 55.66403532028198,
+          "p05": 60.40036113262177,
+          "median": 87.38474810123444,
+          "p95": 106.49408862590789,
+          "maximum": 107.4218225479126
+        },
+        "extent_y_mm": {
+          "minimum": 42.96875,
+          "p05": 44.82421875,
+          "median": 64.45309352874756,
+          "p95": 91.35737726688382,
+          "maximum": 104.49213647842407
+        }
+      },
+      "aorta": {
+        "median_hu": {
+          "minimum": 30.0,
+          "p05": 34.0,
+          "median": 43.0,
+          "p95": 230.05,
+          "maximum": 260.0
+        },
+        "iqr_hu": {
+          "minimum": 17.0,
+          "p05": 19.95,
+          "median": 26.0,
+          "p95": 42.099999999999994,
+          "maximum": 45.0
+        },
+        "offset_x_mm": {
+          "minimum": -10.466466507223329,
+          "p05": 2.4072970385055323,
+          "median": 12.219202847154122,
+          "p95": 22.717919634579246,
+          "maximum": 27.053773712155177
+        },
+        "offset_y_mm": {
+          "minimum": -23.82525380573147,
+          "p05": -20.898546923920215,
+          "median": 5.144080615338833,
+          "p95": 35.139754770088686,
+          "maximum": 68.00709320112036
+        },
+        "extent_x_mm": {
+          "minimum": 49.80466318130493,
+          "p05": 57.382831525802615,
+          "median": 77.63668084144592,
+          "p95": 94.78637992739677,
+          "maximum": 96.67964029312134
+        },
+        "extent_y_mm": {
+          "minimum": 87.89058208465576,
+          "p05": 94.67768814563752,
+          "median": 113.47652387619019,
+          "p95": 148.68156802654266,
+          "maximum": 161.36712312698364
+        }
+      }
+    },
+    "current_augmentation_physical_equivalents": {
+      "translation_5_percent_mm": 19.200000000000003,
+      "brightness_0_05_hu": 100.0,
+      "noise_sigma_0_02_hu": 40.0
+    }
+  },
+  "patients": [
+    {
+      "patient": "Patient_01",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 2.885172219372345,
+      "foreground_offset_y_mm": -35.00905964857595,
+      "foreground_extent_x_mm": 137.6953125,
+      "foreground_extent_y_mm": 164.0625,
+      "foreground_margin_x_low_mm": 130.859375,
+      "foreground_margin_x_high_mm": 115.234375,
+      "foreground_margin_y_low_mm": 80.078125,
+      "foreground_margin_y_high_mm": 139.6484375,
+      "minimum_foreground_margin_mm": 80.078125,
+      "body_offset_x_mm": -0.5133082986611137,
+      "body_offset_y_mm": 3.1508204738529555,
+      "body_roll_degrees": 2.767607934477404,
+      "body_x_mm": 379.39453125,
+      "body_y_mm": 267.578125,
+      "noise_sigma_hu": 9.6369,
+      "organs": {
+        "esophagus": {
+          "median_hu": 9.0,
+          "iqr_hu": 50.0,
+          "offset_x_mm": -2.9113488645489127,
+          "offset_y_mm": 8.544718279951818,
+          "extent_x_mm": 40.0390625,
+          "extent_y_mm": 62.5
+        },
+        "heart": {
+          "median_hu": 26.0,
+          "iqr_hu": 43.0,
+          "offset_x_mm": 4.1376927244439194,
+          "offset_y_mm": -53.42360985759101,
+          "extent_x_mm": 137.6953125,
+          "extent_y_mm": 128.90625
+        },
+        "trachea": {
+          "median_hu": -972.0,
+          "iqr_hu": 125.0,
+          "offset_x_mm": -5.619086135930512,
+          "offset_y_mm": -3.0642321788403315,
+          "extent_x_mm": 88.8671875,
+          "extent_y_mm": 69.3359375
+        },
+        "aorta": {
+          "median_hu": 37.0,
+          "iqr_hu": 19.0,
+          "offset_x_mm": 2.9031817069994634,
+          "offset_y_mm": 5.350751562045398,
+          "extent_x_mm": 82.03125,
+          "extent_y_mm": 109.375
+        }
+      }
+    },
+    {
+      "patient": "Patient_02",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 14.09143625986258,
+      "foreground_offset_y_mm": -42.96205497788455,
+      "foreground_extent_x_mm": 136.71868324279785,
+      "foreground_extent_y_mm": 142.5780553817749,
+      "foreground_margin_x_low_mm": 141.60149335861206,
+      "foreground_margin_x_high_mm": 105.46869850158691,
+      "foreground_margin_y_low_mm": 83.00777196884155,
+      "foreground_margin_y_high_mm": 158.20304775238037,
+      "minimum_foreground_margin_mm": 83.00777196884155,
+      "body_offset_x_mm": -1.4286068508825362,
+      "body_offset_y_mm": -7.2895351013579415,
+      "body_roll_degrees": 0.6812966523097188,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 246.58191084861755,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 50.0,
+          "iqr_hu": 43.0,
+          "offset_x_mm": -2.942370000518176,
+          "offset_y_mm": -6.29742075703633,
+          "extent_x_mm": 49.80466318130493,
+          "extent_y_mm": 53.7109112739563
+        },
+        "heart": {
+          "median_hu": 133.0,
+          "iqr_hu": 84.0,
+          "offset_x_mm": 16.882053275890318,
+          "offset_y_mm": -53.145818397658715,
+          "extent_x_mm": 136.71868324279785,
+          "extent_y_mm": 115.23431873321533
+        },
+        "trachea": {
+          "median_hu": -886.0,
+          "iqr_hu": 180.25,
+          "offset_x_mm": -6.351973614565433,
+          "offset_y_mm": -23.263229840960403,
+          "extent_x_mm": 57.617159366607666,
+          "extent_y_mm": 61.52340745925903
+        },
+        "aorta": {
+          "median_hu": 171.0,
+          "iqr_hu": 33.0,
+          "offset_x_mm": 9.647763803358034,
+          "offset_y_mm": -11.893943942846546,
+          "extent_x_mm": 75.19527578353882,
+          "extent_y_mm": 104.49213647842407
+        }
+      }
+    },
+    {
+      "patient": "Patient_03",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 11.280435267185341,
+      "foreground_offset_y_mm": -2.0034658043380955,
+      "foreground_extent_x_mm": 134.76555919647217,
+      "foreground_extent_y_mm": 119.1405668258667,
+      "foreground_margin_x_low_mm": 137.6952452659607,
+      "foreground_margin_x_high_mm": 111.32807064056396,
+      "foreground_margin_y_low_mm": 137.6952452659607,
+      "foreground_margin_y_high_mm": 126.95306301116943,
+      "minimum_foreground_margin_mm": 111.32807064056396,
+      "body_offset_x_mm": 2.7524731904917363,
+      "body_offset_y_mm": 25.715043693875362,
+      "body_roll_degrees": 0.7138234532452827,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 203.61318182945251,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 51.0,
+          "iqr_hu": 50.0,
+          "offset_x_mm": 4.512295046377243,
+          "offset_y_mm": 26.38551552004896,
+          "extent_x_mm": 49.80466318130493,
+          "extent_y_mm": 58.59372138977051
+        },
+        "heart": {
+          "median_hu": 113.0,
+          "iqr_hu": 98.0,
+          "offset_x_mm": 13.597929121861926,
+          "offset_y_mm": -10.660317008027645,
+          "extent_x_mm": 134.76555919647217,
+          "extent_y_mm": 94.72651624679565
+        },
+        "trachea": {
+          "median_hu": -881.0,
+          "iqr_hu": 229.0,
+          "offset_x_mm": -6.623355546831635,
+          "offset_y_mm": 15.492942990572285,
+          "extent_x_mm": 85.93745803833008,
+          "extent_y_mm": 70.31246566772461
+        },
+        "aorta": {
+          "median_hu": 209.0,
+          "iqr_hu": 41.0,
+          "offset_x_mm": 8.552030259450648,
+          "offset_y_mm": 22.80623226584322,
+          "extent_x_mm": 71.28902769088745,
+          "extent_y_mm": 87.89058208465576
+        }
+      }
+    },
+    {
+      "patient": "Patient_04",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 24.05814168131576,
+      "foreground_offset_y_mm": -16.02269203092766,
+      "foreground_extent_x_mm": 152.34367561340332,
+      "foreground_extent_y_mm": 167.9686679840088,
+      "foreground_margin_x_low_mm": 140.62493133544922,
+      "foreground_margin_x_high_mm": 90.82026815414429,
+      "foreground_margin_y_low_mm": 105.46869850158691,
+      "foreground_margin_y_high_mm": 110.35150861740112,
+      "minimum_foreground_margin_mm": 90.82026815414429,
+      "body_offset_x_mm": -1.8289760055078994,
+      "body_offset_y_mm": 15.97142194820682,
+      "body_roll_degrees": 0.5870023849669863,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 262.206903219223,
+      "noise_sigma_hu": 8.1543,
+      "organs": {
+        "esophagus": {
+          "median_hu": 22.0,
+          "iqr_hu": 43.0,
+          "offset_x_mm": 6.9619589500821455,
+          "offset_y_mm": 14.104265511645673,
+          "extent_x_mm": 40.039042949676514,
+          "extent_y_mm": 71.28902769088745
+        },
+        "heart": {
+          "median_hu": 38.0,
+          "iqr_hu": 35.0,
+          "offset_x_mm": 29.25133420943591,
+          "offset_y_mm": -34.40243975176696,
+          "extent_x_mm": 140.62493133544922,
+          "extent_y_mm": 112.3046326637268
+        },
+        "trachea": {
+          "median_hu": -922.0,
+          "iqr_hu": 87.0,
+          "offset_x_mm": -3.6018005358798826,
+          "offset_y_mm": 1.8737750215953897,
+          "extent_x_mm": 99.60932636260986,
+          "extent_y_mm": 62.499969482421875
+        },
+        "aorta": {
+          "median_hu": 45.0,
+          "iqr_hu": 22.0,
+          "offset_x_mm": 18.759224535434125,
+          "offset_y_mm": 18.19903380726354,
+          "extent_x_mm": 83.9843339920044,
+          "extent_y_mm": 143.55461740493774
+        }
+      }
+    },
+    {
+      "patient": "Patient_05",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 21.484303316508996,
+      "foreground_offset_y_mm": 0.8342814466384962,
+      "foreground_extent_x_mm": 137.6953125,
+      "foreground_extent_y_mm": 136.71875,
+      "foreground_margin_x_low_mm": 145.5078125,
+      "foreground_margin_x_high_mm": 100.5859375,
+      "foreground_margin_y_low_mm": 134.765625,
+      "foreground_margin_y_high_mm": 112.3046875,
+      "minimum_foreground_margin_mm": 100.5859375,
+      "body_offset_x_mm": -0.5643014211427211,
+      "body_offset_y_mm": 39.25775006388363,
+      "body_roll_degrees": 1.1163274038649504,
+      "body_x_mm": 337.890625,
+      "body_y_mm": 228.515625,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 14.0,
+          "iqr_hu": 377.0,
+          "offset_x_mm": 4.934297508520396,
+          "offset_y_mm": 35.47803704166178,
+          "extent_x_mm": 39.0625,
+          "extent_y_mm": 54.6875
+        },
+        "heart": {
+          "median_hu": 39.0,
+          "iqr_hu": 25.0,
+          "offset_x_mm": 25.136631368299273,
+          "offset_y_mm": -9.66754946397408,
+          "extent_x_mm": 135.7421875,
+          "extent_y_mm": 101.5625
+        },
+        "trachea": {
+          "median_hu": -964.0,
+          "iqr_hu": 519.0,
+          "offset_x_mm": -1.0409919077268293,
+          "offset_y_mm": 11.999354044202965,
+          "extent_x_mm": 70.3125,
+          "extent_y_mm": 59.5703125
+        },
+        "aorta": {
+          "median_hu": 43.0,
+          "iqr_hu": 23.0,
+          "offset_x_mm": 18.308711887454145,
+          "offset_y_mm": 26.451202082677206,
+          "extent_x_mm": 56.640625,
+          "extent_y_mm": 119.140625
+        }
+      }
+    },
+    {
+      "patient": "Patient_06",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 30.665119365910698,
+      "foreground_offset_y_mm": -35.367341139736716,
+      "foreground_extent_x_mm": 152.34367561340332,
+      "foreground_extent_y_mm": 150.39055156707764,
+      "foreground_margin_x_low_mm": 150.39055156707764,
+      "foreground_margin_x_high_mm": 81.05464792251587,
+      "foreground_margin_y_low_mm": 85.93745803833008,
+      "foreground_margin_y_high_mm": 147.4608654975891,
+      "minimum_foreground_margin_mm": 81.05464792251587,
+      "body_offset_x_mm": -2.5848896267093737,
+      "body_offset_y_mm": -2.095808779267212,
+      "body_roll_degrees": 1.4011172540597414,
+      "body_x_mm": 378.9060649871826,
+      "body_y_mm": 229.49207544326782,
+      "noise_sigma_hu": 12.6021,
+      "organs": {
+        "esophagus": {
+          "median_hu": 45.0,
+          "iqr_hu": 52.0,
+          "offset_x_mm": 13.558949657942703,
+          "offset_y_mm": -1.6811253169320755,
+          "extent_x_mm": 50.78122520446777,
+          "extent_y_mm": 64.45309352874756
+        },
+        "heart": {
+          "median_hu": 125.0,
+          "iqr_hu": 89.0,
+          "offset_x_mm": 34.55295982589847,
+          "offset_y_mm": -46.147740990566554,
+          "extent_x_mm": 147.4608654975891,
+          "extent_y_mm": 120.11712884902954
+        },
+        "trachea": {
+          "median_hu": -968.0,
+          "iqr_hu": 141.0,
+          "offset_x_mm": 0.27055561636054987,
+          "offset_y_mm": -24.16033127458244,
+          "extent_x_mm": 69.33590364456177,
+          "extent_y_mm": 69.33590364456177
+        },
+        "aorta": {
+          "median_hu": 196.0,
+          "iqr_hu": 34.0,
+          "offset_x_mm": 25.572349499241096,
+          "offset_y_mm": -8.423491740830896,
+          "extent_x_mm": 76.17183780670166,
+          "extent_y_mm": 120.11712884902954
+        }
+      }
+    },
+    {
+      "patient": "Patient_07",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 9.826627291819184,
+      "foreground_offset_y_mm": -41.97523486955676,
+      "foreground_extent_x_mm": 132.8125,
+      "foreground_extent_y_mm": 146.484375,
+      "foreground_margin_x_low_mm": 135.7421875,
+      "foreground_margin_x_high_mm": 115.234375,
+      "foreground_margin_y_low_mm": 82.03125,
+      "foreground_margin_y_high_mm": 155.2734375,
+      "minimum_foreground_margin_mm": 82.03125,
+      "body_offset_x_mm": -4.528576158681768,
+      "body_offset_y_mm": -13.224968332875509,
+      "body_roll_degrees": 1.3086530395552174,
+      "body_x_mm": 383.7890625,
+      "body_y_mm": 254.8828125,
+      "noise_sigma_hu": 13.343399999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 19.0,
+          "iqr_hu": 55.0,
+          "offset_x_mm": 1.4570113900602977,
+          "offset_y_mm": -3.229203102214945,
+          "extent_x_mm": 46.875,
+          "extent_y_mm": 56.640625
+        },
+        "heart": {
+          "median_hu": 25.0,
+          "iqr_hu": 49.0,
+          "offset_x_mm": 11.713238066335313,
+          "offset_y_mm": -55.237574964433215,
+          "extent_x_mm": 132.8125,
+          "extent_y_mm": 115.234375
+        },
+        "trachea": {
+          "median_hu": -953.0,
+          "iqr_hu": 279.0,
+          "offset_x_mm": -6.2979260421601175,
+          "offset_y_mm": -4.510876806016112,
+          "extent_x_mm": 95.703125,
+          "extent_y_mm": 42.96875
+        },
+        "aorta": {
+          "median_hu": 34.0,
+          "iqr_hu": 26.0,
+          "offset_x_mm": 7.160110690994481,
+          "offset_y_mm": -5.077764179631849,
+          "extent_x_mm": 61.5234375,
+          "extent_y_mm": 101.5625
+        }
+      }
+    },
+    {
+      "patient": "Patient_08",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 8.039623621496919,
+      "foreground_offset_y_mm": 8.904889021584209,
+      "foreground_extent_x_mm": 118.16400480270386,
+      "foreground_extent_y_mm": 128.90618705749512,
+      "foreground_margin_x_low_mm": 139.64836931228638,
+      "foreground_margin_x_high_mm": 125.97650098800659,
+      "foreground_margin_y_low_mm": 139.64836931228638,
+      "foreground_margin_y_high_mm": 115.23431873321533,
+      "minimum_foreground_margin_mm": 115.23431873321533,
+      "body_offset_x_mm": 0.18320017327254065,
+      "body_offset_y_mm": 46.57473893318319,
+      "body_roll_degrees": 3.0048762856341824,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 213.37880206108093,
+      "noise_sigma_hu": 11.119499999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 47.0,
+          "iqr_hu": 31.0,
+          "offset_x_mm": 3.088309166277227,
+          "offset_y_mm": 33.408194610340836,
+          "extent_x_mm": 48.82810115814209,
+          "extent_y_mm": 56.640597343444824
+        },
+        "heart": {
+          "median_hu": 40.0,
+          "iqr_hu": 39.0,
+          "offset_x_mm": 6.458829417635836,
+          "offset_y_mm": -1.0979741986008371,
+          "extent_x_mm": 118.16400480270386,
+          "extent_y_mm": 101.56245040893555
+        },
+        "trachea": {
+          "median_hu": -979.0,
+          "iqr_hu": 84.0,
+          "offset_x_mm": 0.5422328398242511,
+          "offset_y_mm": 16.608793213490628,
+          "extent_x_mm": 55.66403532028198,
+          "extent_y_mm": 78.12496185302734
+        },
+        "aorta": {
+          "median_hu": 45.0,
+          "iqr_hu": 22.0,
+          "offset_x_mm": 15.213056343258419,
+          "offset_y_mm": 33.10871568500794,
+          "extent_x_mm": 83.00777196884155,
+          "extent_y_mm": 93.74995422363281
+        }
+      }
+    },
+    {
+      "patient": "Patient_09",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 13.823643070770872,
+      "foreground_offset_y_mm": -34.4035115359822,
+      "foreground_extent_x_mm": 137.6952452659607,
+      "foreground_extent_y_mm": 148.43742752075195,
+      "foreground_margin_x_low_mm": 142.5780553817749,
+      "foreground_margin_x_high_mm": 103.51557445526123,
+      "foreground_margin_y_low_mm": 92.77339220046997,
+      "foreground_margin_y_high_mm": 142.5780553817749,
+      "minimum_foreground_margin_mm": 92.77339220046997,
+      "body_offset_x_mm": -5.0517400203716845,
+      "body_offset_y_mm": 3.772207949344507,
+      "body_roll_degrees": 2.1388240023712726,
+      "body_x_mm": 342.28498911857605,
+      "body_y_mm": 226.5623893737793,
+      "noise_sigma_hu": 9.6369,
+      "organs": {
+        "esophagus": {
+          "median_hu": 41.0,
+          "iqr_hu": 42.0,
+          "offset_x_mm": 0.48002461252942796,
+          "offset_y_mm": 4.608102720886215,
+          "extent_x_mm": 41.015604972839355,
+          "extent_y_mm": 69.33590364456177
+        },
+        "heart": {
+          "median_hu": 112.0,
+          "iqr_hu": 75.0,
+          "offset_x_mm": 16.594182040917996,
+          "offset_y_mm": -42.93207263522087,
+          "extent_x_mm": 137.6952452659607,
+          "extent_y_mm": 120.11712884902954
+        },
+        "trachea": {
+          "median_hu": -985.0,
+          "iqr_hu": 99.0,
+          "offset_x_mm": -9.5169607215392,
+          "offset_y_mm": -16.96099703452225,
+          "extent_x_mm": 82.03120994567871,
+          "extent_y_mm": 80.07808589935303
+        },
+        "aorta": {
+          "median_hu": 137.0,
+          "iqr_hu": 25.0,
+          "offset_x_mm": 9.603064995923075,
+          "offset_y_mm": 0.6298256508074241,
+          "extent_x_mm": 74.21871376037598,
+          "extent_y_mm": 109.37494659423828
+        }
+      }
+    },
+    {
+      "patient": "Patient_10",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 13.390675522464868,
+      "foreground_offset_y_mm": -68.31668830748627,
+      "foreground_extent_x_mm": 146.484375,
+      "foreground_extent_y_mm": 167.96875,
+      "foreground_margin_x_low_mm": 132.8125,
+      "foreground_margin_x_high_mm": 104.4921875,
+      "foreground_margin_y_low_mm": 47.8515625,
+      "foreground_margin_y_high_mm": 167.96875,
+      "minimum_foreground_margin_mm": 47.8515625,
+      "body_offset_x_mm": -3.679617831513715,
+      "body_offset_y_mm": -17.137023990757324,
+      "body_roll_degrees": 2.1897323085327756,
+      "body_x_mm": 383.7890625,
+      "body_y_mm": 291.015625,
+      "noise_sigma_hu": 17.7912,
+      "organs": {
+        "esophagus": {
+          "median_hu": 20.0,
+          "iqr_hu": 61.0,
+          "offset_x_mm": 3.2978743232703334,
+          "offset_y_mm": -15.057127741328696,
+          "extent_x_mm": 41.9921875,
+          "extent_y_mm": 45.8984375
+        },
+        "heart": {
+          "median_hu": 26.0,
+          "iqr_hu": 73.0,
+          "offset_x_mm": 15.233403859169659,
+          "offset_y_mm": -83.62119112806694,
+          "extent_x_mm": 144.53125,
+          "extent_y_mm": 128.90625
+        },
+        "trachea": {
+          "median_hu": -961.0,
+          "iqr_hu": 332.5,
+          "offset_x_mm": -7.79426939579464,
+          "offset_y_mm": -24.86953356313043,
+          "extent_x_mm": 85.9375,
+          "extent_y_mm": 46.875
+        },
+        "aorta": {
+          "median_hu": 42.0,
+          "iqr_hu": 44.0,
+          "offset_x_mm": 11.526362076676511,
+          "offset_y_mm": -20.888555376967155,
+          "extent_x_mm": 79.1015625,
+          "extent_y_mm": 110.3515625
+        }
+      }
+    },
+    {
+      "patient": "Patient_11",
+      "original_spacing_xy_mm": [
+        1.269531011581421,
+        1.269531011581421
+      ],
+      "effective_spacing_xy_mm": [
+        0.998433243483305,
+        0.998433243483305
+      ],
+      "foreground_offset_x_mm": 16.58630692967299,
+      "foreground_offset_y_mm": -53.247677524869594,
+      "foreground_extent_x_mm": 147.26559734344482,
+      "foreground_extent_y_mm": 166.30856251716614,
+      "foreground_margin_x_low_mm": 140.91794228553772,
+      "foreground_margin_x_high_mm": 95.21482586860657,
+      "foreground_margin_y_low_mm": 55.85936450958252,
+      "foreground_margin_y_high_mm": 161.23043847084045,
+      "minimum_foreground_margin_mm": 55.85936450958252,
+      "body_offset_x_mm": -3.624644138539522,
+      "body_offset_y_mm": -31.48784266052069,
+      "body_roll_degrees": 1.872822926894969,
+      "body_x_mm": 383.3983654975891,
+      "body_y_mm": 289.45307064056396,
+      "noise_sigma_hu": 7.412999999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 22.0,
+          "iqr_hu": 28.0,
+          "offset_x_mm": -2.2816753141534147,
+          "offset_y_mm": -17.06552501315281,
+          "extent_x_mm": 52.05077147483826,
+          "extent_y_mm": 63.476550579071045
+        },
+        "heart": {
+          "median_hu": 22.0,
+          "iqr_hu": 72.0,
+          "offset_x_mm": 21.326079292979937,
+          "offset_y_mm": -66.23696969411112,
+          "extent_x_mm": 147.26559734344482,
+          "extent_y_mm": 137.10934925079346
+        },
+        "trachea": {
+          "median_hu": -886.0,
+          "iqr_hu": 299.0,
+          "offset_x_mm": -4.000656180344388,
+          "offset_y_mm": -26.743740186976016,
+          "extent_x_mm": 99.02341890335083,
+          "extent_y_mm": 77.44139170646667
+        },
+        "aorta": {
+          "median_hu": 34.0,
+          "iqr_hu": 17.0,
+          "offset_x_mm": 7.987105079940764,
+          "offset_y_mm": -15.631571354051392,
+          "extent_x_mm": 67.28514361381531,
+          "extent_y_mm": 111.71872901916504
+        }
+      }
+    },
+    {
+      "patient": "Patient_12",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 30.88122532759696,
+      "foreground_offset_y_mm": -28.21017812041035,
+      "foreground_extent_x_mm": 143.5546875,
+      "foreground_extent_y_mm": 164.0625,
+      "foreground_margin_x_low_mm": 156.25,
+      "foreground_margin_x_high_mm": 83.984375,
+      "foreground_margin_y_low_mm": 94.7265625,
+      "foreground_margin_y_high_mm": 125.0,
+      "minimum_foreground_margin_mm": 83.984375,
+      "body_offset_x_mm": 1.5187554761047217,
+      "body_offset_y_mm": 10.648029148963513,
+      "body_roll_degrees": 0.4240876493572614,
+      "body_x_mm": 363.76953125,
+      "body_y_mm": 258.30078125,
+      "noise_sigma_hu": 13.343399999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 21.0,
+          "iqr_hu": 57.0,
+          "offset_x_mm": 11.344316709844565,
+          "offset_y_mm": 16.59606085255777,
+          "extent_x_mm": 41.015625,
+          "extent_y_mm": 60.546875
+        },
+        "heart": {
+          "median_hu": 34.0,
+          "iqr_hu": 35.0,
+          "offset_x_mm": 37.45066802442803,
+          "offset_y_mm": -42.45835742881354,
+          "extent_x_mm": 142.578125,
+          "extent_y_mm": 120.1171875
+        },
+        "trachea": {
+          "median_hu": -965.0,
+          "iqr_hu": 110.0,
+          "offset_x_mm": 2.6437959531900033,
+          "offset_y_mm": -5.652036403714339,
+          "extent_x_mm": 86.9140625,
+          "extent_y_mm": 57.6171875
+        },
+        "aorta": {
+          "median_hu": 41.0,
+          "iqr_hu": 27.0,
+          "offset_x_mm": 17.065073827806643,
+          "offset_y_mm": 5.770713421772489,
+          "extent_x_mm": 78.125,
+          "extent_y_mm": 135.7421875
+        }
+      }
+    },
+    {
+      "patient": "Patient_13",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 25.39133010145361,
+      "foreground_offset_y_mm": -39.94769009004856,
+      "foreground_extent_x_mm": 144.53125,
+      "foreground_extent_y_mm": 156.25,
+      "foreground_margin_x_low_mm": 152.34375,
+      "foreground_margin_x_high_mm": 86.9140625,
+      "foreground_margin_y_low_mm": 78.125,
+      "foreground_margin_y_high_mm": 149.4140625,
+      "minimum_foreground_margin_mm": 78.125,
+      "body_offset_x_mm": -0.9003510991141134,
+      "body_offset_y_mm": -6.7626165377053375,
+      "body_roll_degrees": 0.73209621696315,
+      "body_x_mm": 383.7890625,
+      "body_y_mm": 274.4140625,
+      "noise_sigma_hu": 18.5325,
+      "organs": {
+        "esophagus": {
+          "median_hu": 21.0,
+          "iqr_hu": 59.0,
+          "offset_x_mm": 5.958935893173756,
+          "offset_y_mm": -0.5817406888508903,
+          "extent_x_mm": 41.015625,
+          "extent_y_mm": 43.9453125
+        },
+        "heart": {
+          "median_hu": 29.0,
+          "iqr_hu": 66.0,
+          "offset_x_mm": 29.23306072981363,
+          "offset_y_mm": -52.82514249479969,
+          "extent_x_mm": 144.53125,
+          "extent_y_mm": 120.1171875
+        },
+        "trachea": {
+          "median_hu": -950.0,
+          "iqr_hu": 246.5,
+          "offset_x_mm": 3.057365487757757,
+          "offset_y_mm": -10.419858616360605,
+          "extent_x_mm": 102.5390625,
+          "extent_y_mm": 44.921875
+        },
+        "aorta": {
+          "median_hu": 43.0,
+          "iqr_hu": 42.0,
+          "offset_x_mm": 17.981826369281833,
+          "offset_y_mm": -4.798635939330332,
+          "extent_x_mm": 75.1953125,
+          "extent_y_mm": 117.1875
+        }
+      }
+    },
+    {
+      "patient": "Patient_14",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 32.65984263639658,
+      "foreground_offset_y_mm": -2.8055003105684344,
+      "foreground_extent_x_mm": 125.97650098800659,
+      "foreground_extent_y_mm": 137.6952452659607,
+      "foreground_margin_x_low_mm": 164.06241989135742,
+      "foreground_margin_x_high_mm": 93.74995422363281,
+      "foreground_margin_y_low_mm": 126.95306301116943,
+      "foreground_margin_y_high_mm": 119.1405668258667,
+      "minimum_foreground_margin_mm": 93.74995422363281,
+      "body_offset_x_mm": -3.414353864280247,
+      "body_offset_y_mm": 35.380680996177404,
+      "body_roll_degrees": 0.8777710259159832,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 223.63270330429077,
+      "noise_sigma_hu": 7.412999999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 4.0,
+          "iqr_hu": 77.0,
+          "offset_x_mm": 15.169086814400499,
+          "offset_y_mm": 25.69600771603228,
+          "extent_x_mm": 48.82810115814209,
+          "extent_y_mm": 71.28902769088745
+        },
+        "heart": {
+          "median_hu": 30.0,
+          "iqr_hu": 52.0,
+          "offset_x_mm": 38.60369270035073,
+          "offset_y_mm": -17.176253906720067,
+          "extent_x_mm": 115.23431873321533,
+          "extent_y_mm": 99.60932636260986
+        },
+        "trachea": {
+          "median_hu": -749.0,
+          "iqr_hu": 529.0,
+          "offset_x_mm": 8.8877102137436,
+          "offset_y_mm": 7.959250537037982,
+          "extent_x_mm": 70.31246566772461,
+          "extent_y_mm": 85.93745803833008
+        },
+        "aorta": {
+          "median_hu": 41.0,
+          "iqr_hu": 24.0,
+          "offset_x_mm": 21.830139704063928,
+          "offset_y_mm": 33.83421846887398,
+          "extent_x_mm": 49.80466318130493,
+          "extent_y_mm": 107.4218225479126
+        }
+      }
+    },
+    {
+      "patient": "Patient_15",
+      "original_spacing_xy_mm": [
+        0.8964840173721313,
+        0.8964840173721313
+      ],
+      "effective_spacing_xy_mm": [
+        0.9992061443626881,
+        0.9992061443626881
+      ],
+      "foreground_offset_x_mm": 22.865839310052234,
+      "foreground_offset_y_mm": -35.96361925224886,
+      "foreground_extent_x_mm": 155.98821902275085,
+      "foreground_extent_y_mm": 186.46867561340332,
+      "foreground_margin_x_low_mm": 140.74799072742462,
+      "foreground_margin_x_high_mm": 86.95894968509674,
+      "foreground_margin_y_low_mm": 77.0976254940033,
+      "foreground_margin_y_high_mm": 120.1288583278656,
+      "minimum_foreground_margin_mm": 77.0976254940033,
+      "body_offset_x_mm": 0.6865434452572998,
+      "body_offset_y_mm": 0.09603938015467917,
+      "body_roll_degrees": 2.7019765726532228,
+      "body_x_mm": 377.4197713136673,
+      "body_y_mm": 250.5672828555107,
+      "noise_sigma_hu": 8.1543,
+      "organs": {
+        "esophagus": {
+          "median_hu": 21.0,
+          "iqr_hu": 35.0,
+          "offset_x_mm": 18.360539708644016,
+          "offset_y_mm": 1.7325388854576902,
+          "extent_x_mm": 60.96091318130493,
+          "extent_y_mm": 72.61520540714264
+        },
+        "heart": {
+          "median_hu": 36.0,
+          "iqr_hu": 27.0,
+          "offset_x_mm": 25.544585850519535,
+          "offset_y_mm": -53.14686520064705,
+          "extent_x_mm": 155.98821902275085,
+          "extent_y_mm": 130.88666653633118
+        },
+        "trachea": {
+          "median_hu": -926.0,
+          "iqr_hu": 208.0,
+          "offset_x_mm": 2.2105804404341263,
+          "offset_y_mm": -15.658976960482072,
+          "extent_x_mm": 87.85543370246887,
+          "extent_y_mm": 66.33981728553772
+        },
+        "aorta": {
+          "median_hu": 35.0,
+          "iqr_hu": 20.0,
+          "offset_x_mm": 20.333918111316763,
+          "offset_y_mm": -3.214141015910459,
+          "extent_x_mm": 95.92378985881805,
+          "extent_y_mm": 161.36712312698364
+        }
+      }
+    },
+    {
+      "patient": "Patient_16",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 14.668965476965841,
+      "foreground_offset_y_mm": -41.580037326949885,
+      "foreground_extent_x_mm": 153.32023763656616,
+      "foreground_extent_y_mm": 173.82804012298584,
+      "foreground_margin_x_low_mm": 132.81243515014648,
+      "foreground_margin_x_high_mm": 97.65620231628418,
+      "foreground_margin_y_low_mm": 69.33590364456177,
+      "foreground_margin_y_high_mm": 140.62493133544922,
+      "minimum_foreground_margin_mm": 69.33590364456177,
+      "body_offset_x_mm": -1.0199423794744935,
+      "body_offset_y_mm": 0.857959748589671,
+      "body_roll_degrees": 1.1107803424538076,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 298.8279790878296,
+      "noise_sigma_hu": 11.8608,
+      "organs": {
+        "esophagus": {
+          "median_hu": 31.0,
+          "iqr_hu": 47.0,
+          "offset_x_mm": 1.9005577766179527,
+          "offset_y_mm": 10.617999964273706,
+          "extent_x_mm": 38.08591890335083,
+          "extent_y_mm": 56.640597343444824
+        },
+        "heart": {
+          "median_hu": 112.0,
+          "iqr_hu": 143.0,
+          "offset_x_mm": 16.731045426083597,
+          "offset_y_mm": -53.535665575519985,
+          "extent_x_mm": 153.32023763656616,
+          "extent_y_mm": 139.64836931228638
+        },
+        "trachea": {
+          "median_hu": -845.0,
+          "iqr_hu": 401.0,
+          "offset_x_mm": -4.9090462934498795,
+          "offset_y_mm": 2.742600055133299,
+          "extent_x_mm": 102.53901243209839,
+          "extent_y_mm": 59.57028341293335
+        },
+        "aorta": {
+          "median_hu": 179.0,
+          "iqr_hu": 37.0,
+          "offset_x_mm": 10.103791940821328,
+          "offset_y_mm": 6.609042152263325,
+          "extent_x_mm": 77.1483998298645,
+          "extent_y_mm": 101.56245040893555
+        }
+      }
+    },
+    {
+      "patient": "Patient_17",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 10.00525014023793,
+      "foreground_offset_y_mm": -20.098899473179596,
+      "foreground_extent_x_mm": 104.49213647842407,
+      "foreground_extent_y_mm": 117.18744277954102,
+      "foreground_margin_x_low_mm": 152.34367561340332,
+      "foreground_margin_x_high_mm": 126.95306301116943,
+      "foreground_margin_y_low_mm": 119.1405668258667,
+      "foreground_margin_y_high_mm": 147.4608654975891,
+      "minimum_foreground_margin_mm": 119.1405668258667,
+      "body_offset_x_mm": -1.92128808913905,
+      "body_offset_y_mm": 6.931557550482094,
+      "body_roll_degrees": 1.7682476536603033,
+      "body_x_mm": 330.56624484062195,
+      "body_y_mm": 204.10146284103394,
+      "noise_sigma_hu": 7.412999999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 9.0,
+          "iqr_hu": 51.0,
+          "offset_x_mm": 6.380848833018826,
+          "offset_y_mm": 6.911831225841208,
+          "extent_x_mm": 41.015604972839355,
+          "extent_y_mm": 53.7109112739563
+        },
+        "heart": {
+          "median_hu": 42.0,
+          "iqr_hu": 38.0,
+          "offset_x_mm": 10.11981450427653,
+          "offset_y_mm": -29.036109887490152,
+          "extent_x_mm": 104.49213647842407,
+          "extent_y_mm": 94.72651624679565
+        },
+        "trachea": {
+          "median_hu": -925.0,
+          "iqr_hu": 236.0,
+          "offset_x_mm": -2.3054201040476845,
+          "offset_y_mm": -8.062083373564791,
+          "extent_x_mm": 60.54684543609619,
+          "extent_y_mm": 54.68747329711914
+        },
+        "aorta": {
+          "median_hu": 34.0,
+          "iqr_hu": 21.0,
+          "offset_x_mm": 13.487659554616142,
+          "offset_y_mm": 4.9374096686322675,
+          "extent_x_mm": 58.59372138977051,
+          "extent_y_mm": 95.7030782699585
+        }
+      }
+    },
+    {
+      "patient": "Patient_18",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 20.43260904275409,
+      "foreground_offset_y_mm": -13.421293286478294,
+      "foreground_extent_x_mm": 186.52334642410278,
+      "foreground_extent_y_mm": 170.89835405349731,
+      "foreground_margin_x_low_mm": 124.99993896484375,
+      "foreground_margin_x_high_mm": 72.2655897140503,
+      "foreground_margin_y_low_mm": 99.60932636260986,
+      "foreground_margin_y_high_mm": 113.28119468688965,
+      "minimum_foreground_margin_mm": 72.2655897140503,
+      "body_offset_x_mm": -8.787899127714248,
+      "body_offset_y_mm": 19.088816460037712,
+      "body_roll_degrees": 1.1433781094761528,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 289.0623588562012,
+      "noise_sigma_hu": 10.3782,
+      "organs": {
+        "esophagus": {
+          "median_hu": 10.0,
+          "iqr_hu": 59.0,
+          "offset_x_mm": -7.763878062747004,
+          "offset_y_mm": 32.56509688024366,
+          "extent_x_mm": 54.68747329711914,
+          "extent_y_mm": 61.52340745925903
+        },
+        "heart": {
+          "median_hu": 39.0,
+          "iqr_hu": 44.0,
+          "offset_x_mm": 24.359849035896676,
+          "offset_y_mm": -21.2181909441187,
+          "extent_x_mm": 186.52334642410278,
+          "extent_y_mm": 142.5780553817749
+        },
+        "trachea": {
+          "median_hu": -900.0,
+          "iqr_hu": 182.0,
+          "offset_x_mm": -15.55838450375001,
+          "offset_y_mm": 21.638546114735124,
+          "extent_x_mm": 107.4218225479126,
+          "extent_y_mm": 59.57028341293335
+        },
+        "aorta": {
+          "median_hu": 50.0,
+          "iqr_hu": 26.0,
+          "offset_x_mm": 2.56307537735351,
+          "offset_y_mm": 30.76326321854991,
+          "extent_x_mm": 68.35934162139893,
+          "extent_y_mm": 132.81243515014648
+        }
+      }
+    },
+    {
+      "patient": "Patient_19",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": -9.520339368118215,
+      "foreground_offset_y_mm": -12.095320381600818,
+      "foreground_extent_x_mm": 136.71868324279785,
+      "foreground_extent_y_mm": 135.742121219635,
+      "foreground_margin_x_low_mm": 119.1405668258667,
+      "foreground_margin_x_high_mm": 127.92962503433228,
+      "foreground_margin_y_low_mm": 118.16400480270386,
+      "foreground_margin_y_high_mm": 129.88274908065796,
+      "minimum_foreground_margin_mm": 118.16400480270386,
+      "body_offset_x_mm": -23.46303797528521,
+      "body_offset_y_mm": 23.55300233229272,
+      "body_roll_degrees": 1.0909916739977206,
+      "body_x_mm": 303.2225081920624,
+      "body_y_mm": 222.1678602695465,
+      "noise_sigma_hu": 7.412999999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 22.0,
+          "iqr_hu": 39.0,
+          "offset_x_mm": -16.027478794460606,
+          "offset_y_mm": 15.411531574982703,
+          "extent_x_mm": 64.45309352874756,
+          "extent_y_mm": 100.5858883857727
+        },
+        "heart": {
+          "median_hu": 40.0,
+          "iqr_hu": 26.0,
+          "offset_x_mm": -7.616058937719378,
+          "offset_y_mm": -18.141276919581244,
+          "extent_x_mm": 136.71868324279785,
+          "extent_y_mm": 111.32807064056396
+        },
+        "trachea": {
+          "median_hu": -923.0,
+          "iqr_hu": 156.0,
+          "offset_x_mm": -34.915923694769546,
+          "offset_y_mm": -18.31790967782339,
+          "extent_x_mm": 80.07808589935303,
+          "extent_y_mm": 101.56245040893555
+        },
+        "aorta": {
+          "median_hu": 42.0,
+          "iqr_hu": 23.0,
+          "offset_x_mm": -10.466466507223329,
+          "offset_y_mm": 13.781464618023461,
+          "extent_x_mm": 83.9843339920044,
+          "extent_y_mm": 115.23431873321533
+        }
+      }
+    },
+    {
+      "patient": "Patient_20",
+      "original_spacing_xy_mm": [
+        1.3671879768371582,
+        1.3671879768371582
+      ],
+      "effective_spacing_xy_mm": [
+        1.0004682851334412,
+        1.0004682851334412
+      ],
+      "foreground_offset_x_mm": 36.18039995448249,
+      "foreground_offset_y_mm": -41.41625358488602,
+      "foreground_extent_x_mm": 188.67194080352783,
+      "foreground_extent_y_mm": 166.7969331741333,
+      "foreground_margin_x_low_mm": 138.08598566055298,
+      "foreground_margin_x_high_mm": 57.421895027160645,
+      "foreground_margin_y_low_mm": 69.72658681869507,
+      "foreground_margin_y_high_mm": 147.6563014984131,
+      "minimum_foreground_margin_mm": 57.421895027160645,
+      "body_offset_x_mm": -1.4089037490310796,
+      "body_offset_y_mm": -3.572426465619764,
+      "body_roll_degrees": 3.2917786045394166,
+      "body_x_mm": 384.17982149124146,
+      "body_y_mm": 310.3516707420349,
+      "noise_sigma_hu": 10.3782,
+      "organs": {
+        "esophagus": {
+          "median_hu": 23.0,
+          "iqr_hu": 36.0,
+          "offset_x_mm": -7.010200798256577,
+          "offset_y_mm": 3.1477420742255084,
+          "extent_x_mm": 49.218767166137695,
+          "extent_y_mm": 50.58595514297485
+        },
+        "heart": {
+          "median_hu": 33.0,
+          "iqr_hu": 33.0,
+          "offset_x_mm": 45.105180270334884,
+          "offset_y_mm": -50.259789776942995,
+          "extent_x_mm": 170.89849710464478,
+          "extent_y_mm": 142.18754959106445
+        },
+        "trachea": {
+          "median_hu": -771.0,
+          "iqr_hu": 512.0,
+          "offset_x_mm": -13.566623931619647,
+          "offset_y_mm": -8.72011418712339,
+          "extent_x_mm": 101.1719102859497,
+          "extent_y_mm": 71.09377479553223
+        },
+        "aorta": {
+          "median_hu": 35.0,
+          "iqr_hu": 23.0,
+          "offset_x_mm": -0.5524913996060608,
+          "offset_y_mm": -2.69052293261155,
+          "extent_x_mm": 57.421895027160645,
+          "extent_y_mm": 121.67972993850708
+        }
+      }
+    },
+    {
+      "patient": "Patient_21",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 11.430822548466832,
+      "foreground_offset_y_mm": -31.073138785526353,
+      "foreground_extent_x_mm": 148.43742752075195,
+      "foreground_extent_y_mm": 146.48430347442627,
+      "foreground_margin_x_low_mm": 135.742121219635,
+      "foreground_margin_x_high_mm": 99.60932636260986,
+      "foreground_margin_y_low_mm": 94.72651624679565,
+      "foreground_margin_y_high_mm": 142.5780553817749,
+      "minimum_foreground_margin_mm": 94.72651624679565,
+      "body_offset_x_mm": -6.086373087579048,
+      "body_offset_y_mm": 5.931398670044292,
+      "body_roll_degrees": 2.234862085967613,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 254.3944070339203,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 18.0,
+          "iqr_hu": 58.0,
+          "offset_x_mm": -4.522804770148719,
+          "offset_y_mm": -1.6188542574583857,
+          "extent_x_mm": 45.898415088653564,
+          "extent_y_mm": 84.96089601516724
+        },
+        "heart": {
+          "median_hu": 33.0,
+          "iqr_hu": 58.0,
+          "offset_x_mm": 14.571551671133717,
+          "offset_y_mm": -41.59754650865872,
+          "extent_x_mm": 143.55461740493774,
+          "extent_y_mm": 115.23431873321533
+        },
+        "trachea": {
+          "median_hu": -907.0,
+          "iqr_hu": 124.0,
+          "offset_x_mm": -7.540859523983049,
+          "offset_y_mm": -25.111034467546983,
+          "extent_x_mm": 105.46869850158691,
+          "extent_y_mm": 90.82026815414429
+        },
+        "aorta": {
+          "median_hu": 40.0,
+          "iqr_hu": 22.0,
+          "offset_x_mm": 7.490359492564017,
+          "offset_y_mm": -3.3145198066970707,
+          "extent_x_mm": 74.21871376037598,
+          "extent_y_mm": 123.04681491851807
+        }
+      }
+    },
+    {
+      "patient": "Patient_22",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 15.956632880447371,
+      "foreground_offset_y_mm": -51.39362670044362,
+      "foreground_extent_x_mm": 141.60149335861206,
+      "foreground_extent_y_mm": 135.742121219635,
+      "foreground_margin_x_low_mm": 142.5780553817749,
+      "foreground_margin_x_high_mm": 99.60932636260986,
+      "foreground_margin_y_low_mm": 78.12496185302734,
+      "foreground_margin_y_high_mm": 169.92179203033447,
+      "minimum_foreground_margin_mm": 78.12496185302734,
+      "body_offset_x_mm": -3.6692878076344035,
+      "body_offset_y_mm": -11.677744655979279,
+      "body_roll_degrees": 3.0929459121036302,
+      "body_x_mm": 341.79670810699463,
+      "body_y_mm": 232.91004252433777,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 41.0,
+          "iqr_hu": 53.0,
+          "offset_x_mm": 0.5248107630713125,
+          "offset_y_mm": -13.834425718409763,
+          "extent_x_mm": 33.20310878753662,
+          "extent_y_mm": 58.59372138977051
+        },
+        "heart": {
+          "median_hu": 159.0,
+          "iqr_hu": 111.0,
+          "offset_x_mm": 18.8122318028388,
+          "offset_y_mm": -59.780390670812814,
+          "extent_x_mm": 136.71868324279785,
+          "extent_y_mm": 112.3046326637268
+        },
+        "trachea": {
+          "median_hu": -897.0,
+          "iqr_hu": 242.0,
+          "offset_x_mm": -6.357896425089066,
+          "offset_y_mm": -26.65376720477682,
+          "extent_x_mm": 100.5858883857727,
+          "extent_y_mm": 65.4296555519104
+        },
+        "aorta": {
+          "median_hu": 230.0,
+          "iqr_hu": 28.0,
+          "offset_x_mm": 8.616764436310957,
+          "offset_y_mm": -15.885986627487616,
+          "extent_x_mm": 61.52340745925903,
+          "extent_y_mm": 100.5858883857727
+        }
+      }
+    },
+    {
+      "patient": "Patient_23",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 7.70975227241112,
+      "foreground_offset_y_mm": -33.60338490652344,
+      "foreground_extent_x_mm": 131.83587312698364,
+      "foreground_extent_y_mm": 162.10929584503174,
+      "foreground_margin_x_low_mm": 138.67180728912354,
+      "foreground_margin_x_high_mm": 113.28119468688965,
+      "foreground_margin_y_low_mm": 83.00777196884155,
+      "foreground_margin_y_high_mm": 138.67180728912354,
+      "minimum_foreground_margin_mm": 83.00777196884155,
+      "body_offset_x_mm": -2.5524631671591016,
+      "body_offset_y_mm": -0.10564174268284657,
+      "body_roll_degrees": 4.575797000752779,
+      "body_x_mm": 333.9842119216919,
+      "body_y_mm": 235.8397285938263,
+      "noise_sigma_hu": 7.412999999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 15.0,
+          "iqr_hu": 67.0,
+          "offset_x_mm": 6.848283380490174,
+          "offset_y_mm": 3.8591971281124455,
+          "extent_x_mm": 43.94529104232788,
+          "extent_y_mm": 59.57028341293335
+        },
+        "heart": {
+          "median_hu": 32.0,
+          "iqr_hu": 27.0,
+          "offset_x_mm": 9.316567261655345,
+          "offset_y_mm": -46.35227246008087,
+          "extent_x_mm": 131.83587312698364,
+          "extent_y_mm": 130.8593111038208
+        },
+        "trachea": {
+          "median_hu": -917.0,
+          "iqr_hu": 218.0,
+          "offset_x_mm": -7.475276487087348,
+          "offset_y_mm": -11.151594790249046,
+          "extent_x_mm": 77.1483998298645,
+          "extent_y_mm": 63.47653150558472
+        },
+        "aorta": {
+          "median_hu": 36.0,
+          "iqr_hu": 26.0,
+          "offset_x_mm": 4.104282440165071,
+          "offset_y_mm": 0.7920940470152559,
+          "extent_x_mm": 82.03120994567871,
+          "extent_y_mm": 119.1405668258667
+        }
+      }
+    },
+    {
+      "patient": "Patient_24",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 26.1205843556509,
+      "foreground_offset_y_mm": -55.44441019918742,
+      "foreground_extent_x_mm": 144.5311794281006,
+      "foreground_extent_y_mm": 163.08585786819458,
+      "foreground_margin_x_low_mm": 153.32023763656616,
+      "foreground_margin_x_high_mm": 85.93745803833008,
+      "foreground_margin_y_low_mm": 67.38277959823608,
+      "foreground_margin_y_high_mm": 153.32023763656616,
+      "minimum_foreground_margin_mm": 67.38277959823608,
+      "body_offset_x_mm": 5.568125376055351,
+      "body_offset_y_mm": -21.85536546846793,
+      "body_roll_degrees": 1.4086985565467955,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 250.48815894126892,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 22.0,
+          "iqr_hu": 42.0,
+          "offset_x_mm": 21.737790108124337,
+          "offset_y_mm": -19.675829459138775,
+          "extent_x_mm": 49.80466318130493,
+          "extent_y_mm": 73.24215173721313
+        },
+        "heart": {
+          "median_hu": 34.0,
+          "iqr_hu": 43.0,
+          "offset_x_mm": 30.94930341292922,
+          "offset_y_mm": -70.46128498212822,
+          "extent_x_mm": 144.5311794281006,
+          "extent_y_mm": 117.18744277954102
+        },
+        "trachea": {
+          "median_hu": -839.0,
+          "iqr_hu": 462.0,
+          "offset_x_mm": 6.058719248667014,
+          "offset_y_mm": -35.974297564894606,
+          "extent_x_mm": 94.72651624679565,
+          "extent_y_mm": 76.17183780670166
+        },
+        "aorta": {
+          "median_hu": 39.0,
+          "iqr_hu": 21.0,
+          "offset_x_mm": 14.96019279218554,
+          "offset_y_mm": -18.97164569440761,
+          "extent_x_mm": 91.79683017730713,
+          "extent_y_mm": 126.95306301116943
+        }
+      }
+    },
+    {
+      "patient": "Patient_25",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 13.284521482346447,
+      "foreground_offset_y_mm": -19.556428355381072,
+      "foreground_extent_x_mm": 154.296799659729,
+      "foreground_extent_y_mm": 136.71868324279785,
+      "foreground_margin_x_low_mm": 131.83587312698364,
+      "foreground_margin_x_high_mm": 97.65620231628418,
+      "foreground_margin_y_low_mm": 113.28119468688965,
+      "foreground_margin_y_high_mm": 133.78899717330933,
+      "minimum_foreground_margin_mm": 97.65620231628418,
+      "body_offset_x_mm": -3.2064265839200066,
+      "body_offset_y_mm": 13.39427664086971,
+      "body_roll_degrees": 1.4753947266945602,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 243.65222477912903,
+      "noise_sigma_hu": 8.1543,
+      "organs": {
+        "esophagus": {
+          "median_hu": 31.0,
+          "iqr_hu": 44.0,
+          "offset_x_mm": 10.467869769241817,
+          "offset_y_mm": 17.773438396170555,
+          "extent_x_mm": 48.82810115814209,
+          "extent_y_mm": 61.52340745925903
+        },
+        "heart": {
+          "median_hu": 123.0,
+          "iqr_hu": 119.0,
+          "offset_x_mm": 16.34771553208199,
+          "offset_y_mm": -30.35110388855894,
+          "extent_x_mm": 148.43742752075195,
+          "extent_y_mm": 105.46869850158691
+        },
+        "trachea": {
+          "median_hu": -918.0,
+          "iqr_hu": 83.0,
+          "offset_x_mm": -7.558302075884032,
+          "offset_y_mm": 3.9168610265810497,
+          "extent_x_mm": 107.4218225479126,
+          "extent_y_mm": 80.07808589935303
+        },
+        "aorta": {
+          "median_hu": 168.0,
+          "iqr_hu": 34.0,
+          "offset_x_mm": 4.971283514899694,
+          "offset_y_mm": 13.764127474110364,
+          "extent_x_mm": 81.05464792251587,
+          "extent_y_mm": 107.4218225479126
+        }
+      }
+    },
+    {
+      "patient": "Patient_26",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 19.191677636386157,
+      "foreground_offset_y_mm": -53.51207942663547,
+      "foreground_extent_x_mm": 143.5546875,
+      "foreground_extent_y_mm": 144.53125,
+      "foreground_margin_x_low_mm": 145.5078125,
+      "foreground_margin_x_high_mm": 94.7265625,
+      "foreground_margin_y_low_mm": 70.3125,
+      "foreground_margin_y_high_mm": 168.9453125,
+      "minimum_foreground_margin_mm": 70.3125,
+      "body_offset_x_mm": 3.245607994485061,
+      "body_offset_y_mm": -24.14665608946222,
+      "body_roll_degrees": 1.6752692442493284,
+      "body_x_mm": 383.7890625,
+      "body_y_mm": 281.73828125,
+      "noise_sigma_hu": 13.343399999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 17.0,
+          "iqr_hu": 50.0,
+          "offset_x_mm": 4.6746650306036805,
+          "offset_y_mm": -19.104511004065767,
+          "extent_x_mm": 42.96875,
+          "extent_y_mm": 47.8515625
+        },
+        "heart": {
+          "median_hu": -4.0,
+          "iqr_hu": 104.0,
+          "offset_x_mm": 22.92018607725116,
+          "offset_y_mm": -63.82223884799856,
+          "extent_x_mm": 143.5546875,
+          "extent_y_mm": 114.2578125
+        },
+        "trachea": {
+          "median_hu": -875.0,
+          "iqr_hu": 414.0,
+          "offset_x_mm": 0.16525740304493275,
+          "offset_y_mm": -33.446029806868616,
+          "extent_x_mm": 76.171875,
+          "extent_y_mm": 51.7578125
+        },
+        "aorta": {
+          "median_hu": 30.0,
+          "iqr_hu": 24.0,
+          "offset_x_mm": 10.26328976199492,
+          "offset_y_mm": -23.82525380573147,
+          "extent_x_mm": 79.1015625,
+          "extent_y_mm": 109.375
+        }
+      }
+    },
+    {
+      "patient": "Patient_27",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 26.279806545268404,
+      "foreground_offset_y_mm": -10.15879170496728,
+      "foreground_extent_x_mm": 150.390625,
+      "foreground_extent_y_mm": 144.53125,
+      "foreground_margin_x_low_mm": 147.4609375,
+      "foreground_margin_x_high_mm": 85.9375,
+      "foreground_margin_y_low_mm": 112.3046875,
+      "foreground_margin_y_high_mm": 126.953125,
+      "minimum_foreground_margin_mm": 85.9375,
+      "body_offset_x_mm": -3.8615860678896805,
+      "body_offset_y_mm": 15.914292979473053,
+      "body_roll_degrees": 1.5004296241696338,
+      "body_x_mm": 371.09375,
+      "body_y_mm": 255.859375,
+      "noise_sigma_hu": 12.6021,
+      "organs": {
+        "esophagus": {
+          "median_hu": 12.0,
+          "iqr_hu": 59.0,
+          "offset_x_mm": 1.5846353589323015,
+          "offset_y_mm": 26.129336313350766,
+          "extent_x_mm": 47.8515625,
+          "extent_y_mm": 52.734375
+        },
+        "heart": {
+          "median_hu": 26.0,
+          "iqr_hu": 43.0,
+          "offset_x_mm": 30.53628781486409,
+          "offset_y_mm": -20.682807277420057,
+          "extent_x_mm": 145.5078125,
+          "extent_y_mm": 118.1640625
+        },
+        "trachea": {
+          "median_hu": -963.0,
+          "iqr_hu": 76.0,
+          "offset_x_mm": -2.238125980648542,
+          "offset_y_mm": 7.326201679024119,
+          "extent_x_mm": 103.515625,
+          "extent_y_mm": 52.734375
+        },
+        "aorta": {
+          "median_hu": 35.0,
+          "iqr_hu": 25.0,
+          "offset_x_mm": 18.632058377694825,
+          "offset_y_mm": 21.299882515682988,
+          "extent_x_mm": 72.265625,
+          "extent_y_mm": 116.2109375
+        }
+      }
+    },
+    {
+      "patient": "Patient_28",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 38.62170498059985,
+      "foreground_offset_y_mm": -53.736891422135365,
+      "foreground_extent_x_mm": 185.54678440093994,
+      "foreground_extent_y_mm": 213.86708307266235,
+      "foreground_margin_x_low_mm": 140.62493133544922,
+      "foreground_margin_x_high_mm": 57.617159366607666,
+      "foreground_margin_y_low_mm": 45.898415088653564,
+      "foreground_margin_y_high_mm": 124.02337694168091,
+      "minimum_foreground_margin_mm": 45.898415088653564,
+      "body_offset_x_mm": 2.4075026614894135,
+      "body_offset_y_mm": -10.634437049693442,
+      "body_roll_degrees": 1.8336443031054088,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 325.68343472480774,
+      "noise_sigma_hu": 13.343399999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 13.0,
+          "iqr_hu": 87.0,
+          "offset_x_mm": 19.56343016740319,
+          "offset_y_mm": 6.827474318737424,
+          "extent_x_mm": 39.06248092651367,
+          "extent_y_mm": 64.45309352874756
+        },
+        "heart": {
+          "median_hu": 136.0,
+          "iqr_hu": 128.0,
+          "offset_x_mm": 41.64179254141164,
+          "offset_y_mm": -65.63542097903725,
+          "extent_x_mm": 185.54678440093994,
+          "extent_y_mm": 175.78116416931152
+        },
+        "trachea": {
+          "median_hu": -827.0,
+          "iqr_hu": 349.0,
+          "offset_x_mm": 9.209358032800514,
+          "offset_y_mm": -2.06873536476398,
+          "extent_x_mm": 101.56245040893555,
+          "extent_y_mm": 67.38277959823608
+        },
+        "aorta": {
+          "median_hu": 207.0,
+          "iqr_hu": 35.0,
+          "offset_x_mm": 27.053773712155177,
+          "offset_y_mm": 2.662423670549074,
+          "extent_x_mm": 80.07808589935303,
+          "extent_y_mm": 153.32023763656616
+        }
+      }
+    },
+    {
+      "patient": "Patient_29",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 20.540629458515582,
+      "foreground_offset_y_mm": 16.834340840028865,
+      "foreground_extent_x_mm": 145.50774145126343,
+      "foreground_extent_y_mm": 194.33584260940552,
+      "foreground_margin_x_low_mm": 140.62493133544922,
+      "foreground_margin_x_high_mm": 97.65620231628418,
+      "foreground_margin_y_low_mm": 120.11712884902954,
+      "foreground_margin_y_high_mm": 69.33590364456177,
+      "minimum_foreground_margin_mm": 69.33590364456177,
+      "body_offset_x_mm": 1.2324740298748216,
+      "body_offset_y_mm": 41.15624824567469,
+      "body_roll_degrees": 0.7462378212336915,
+      "body_x_mm": 381.83575105667114,
+      "body_y_mm": 299.316260099411,
+      "noise_sigma_hu": 11.119499999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 31.0,
+          "iqr_hu": 44.0,
+          "offset_x_mm": 11.015074704769725,
+          "offset_y_mm": 60.07064051244638,
+          "extent_x_mm": 38.08591890335083,
+          "extent_y_mm": 70.31246566772461
+        },
+        "heart": {
+          "median_hu": 44.0,
+          "iqr_hu": 30.0,
+          "offset_x_mm": 21.23931815836111,
+          "offset_y_mm": -4.296522071480165,
+          "extent_x_mm": 145.50774145126343,
+          "extent_y_mm": 145.50774145126343
+        },
+        "trachea": {
+          "median_hu": -860.0,
+          "iqr_hu": 328.0,
+          "offset_x_mm": 4.19000426003545,
+          "offset_y_mm": 51.40796424262526,
+          "extent_x_mm": 106.44526052474976,
+          "extent_y_mm": 62.499969482421875
+        },
+        "aorta": {
+          "median_hu": 54.0,
+          "iqr_hu": 27.0,
+          "offset_x_mm": 22.567686483807577,
+          "offset_y_mm": 59.944944493169594,
+          "extent_x_mm": 94.72651624679565,
+          "extent_y_mm": 139.64836931228638
+        }
+      }
+    },
+    {
+      "patient": "Patient_30",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 17.052748828005964,
+      "foreground_offset_y_mm": 32.50769967955833,
+      "foreground_extent_x_mm": 148.43742752075195,
+      "foreground_extent_y_mm": 178.71085023880005,
+      "foreground_margin_x_low_mm": 134.76555919647217,
+      "foreground_margin_x_high_mm": 100.5858883857727,
+      "foreground_margin_y_low_mm": 154.296799659729,
+      "foreground_margin_y_high_mm": 50.78122520446777,
+      "minimum_foreground_margin_mm": 50.78122520446777,
+      "body_offset_x_mm": 6.8095088125274845,
+      "body_offset_y_mm": 69.80030439515635,
+      "body_roll_degrees": 1.7801875893927601,
+      "body_x_mm": 309.08188033103943,
+      "body_y_mm": 248.04675388336182,
+      "noise_sigma_hu": 7.412999999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 28.0,
+          "iqr_hu": 39.0,
+          "offset_x_mm": 10.743135463208207,
+          "offset_y_mm": 70.65625617010372,
+          "extent_x_mm": 36.13279485702515,
+          "extent_y_mm": 87.89058208465576
+        },
+        "heart": {
+          "median_hu": 38.0,
+          "iqr_hu": 24.0,
+          "offset_x_mm": 16.758820139706344,
+          "offset_y_mm": 19.49351351625423,
+          "extent_x_mm": 148.43742752075195,
+          "extent_y_mm": 124.02337694168091
+        },
+        "trachea": {
+          "median_hu": -917.0,
+          "iqr_hu": 170.0,
+          "offset_x_mm": 4.356767815538665,
+          "offset_y_mm": 41.95482311285736,
+          "extent_x_mm": 95.7030782699585,
+          "extent_y_mm": 104.49213647842407
+        },
+        "aorta": {
+          "median_hu": 40.0,
+          "iqr_hu": 23.0,
+          "offset_x_mm": 21.299288369555175,
+          "offset_y_mm": 68.00709320112036,
+          "extent_x_mm": 96.67964029312134,
+          "extent_y_mm": 148.43742752075195
+        }
+      }
+    },
+    {
+      "patient": "Patient_31",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 21.343473889008763,
+      "foreground_offset_y_mm": -1.6723577263296592,
+      "foreground_extent_x_mm": 137.6952452659607,
+      "foreground_extent_y_mm": 127.92962503433228,
+      "foreground_margin_x_low_mm": 145.50774145126343,
+      "foreground_margin_x_high_mm": 100.5858883857727,
+      "foreground_margin_y_low_mm": 128.90618705749512,
+      "foreground_margin_y_high_mm": 126.95306301116943,
+      "minimum_foreground_margin_mm": 100.5858883857727,
+      "body_offset_x_mm": -0.13530970827369748,
+      "body_offset_y_mm": 28.302960556449907,
+      "body_roll_degrees": 0.7035519177964318,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 235.8397285938263,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 43.0,
+          "iqr_hu": 71.0,
+          "offset_x_mm": 1.6732629378805242,
+          "offset_y_mm": 35.00060091583558,
+          "extent_x_mm": 46.874977111816406,
+          "extent_y_mm": 39.06248092651367
+        },
+        "heart": {
+          "median_hu": 174.0,
+          "iqr_hu": 104.0,
+          "offset_x_mm": 24.9416304160014,
+          "offset_y_mm": -12.198306806397648,
+          "extent_x_mm": 129.88274908065796,
+          "extent_y_mm": 104.49213647842407
+        },
+        "trachea": {
+          "median_hu": -901.0,
+          "iqr_hu": 220.0,
+          "offset_x_mm": -4.1872811602591495,
+          "offset_y_mm": 24.779793824190296,
+          "extent_x_mm": 105.46869850158691,
+          "extent_y_mm": 50.78122520446777
+        },
+        "aorta": {
+          "median_hu": 260.0,
+          "iqr_hu": 33.0,
+          "offset_x_mm": 15.955283012988398,
+          "offset_y_mm": 28.692780273849745,
+          "extent_x_mm": 68.35934162139893,
+          "extent_y_mm": 94.72651624679565
+        }
+      }
+    },
+    {
+      "patient": "Patient_32",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 10.259357214609496,
+      "foreground_offset_y_mm": -32.25438974304542,
+      "foreground_extent_x_mm": 166.99210596084595,
+      "foreground_extent_y_mm": 196.2889666557312,
+      "foreground_margin_x_low_mm": 123.04681491851807,
+      "foreground_margin_x_high_mm": 93.74995422363281,
+      "foreground_margin_y_low_mm": 71.28902769088745,
+      "foreground_margin_y_high_mm": 116.21088075637817,
+      "minimum_foreground_margin_mm": 71.28902769088745,
+      "body_offset_x_mm": -0.9673209700286962,
+      "body_offset_y_mm": 6.676003977435373,
+      "body_roll_degrees": 2.369012538726274,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 295.41001200675964,
+      "noise_sigma_hu": 8.1543,
+      "organs": {
+        "esophagus": {
+          "median_hu": 42.0,
+          "iqr_hu": 43.0,
+          "offset_x_mm": 0.27803693568204424,
+          "offset_y_mm": 22.661342603307467,
+          "extent_x_mm": 48.82810115814209,
+          "extent_y_mm": 73.24215173721313
+        },
+        "heart": {
+          "median_hu": 109.0,
+          "iqr_hu": 104.0,
+          "offset_x_mm": 11.87054309149481,
+          "offset_y_mm": -46.38205663492349,
+          "extent_x_mm": 166.99210596084595,
+          "extent_y_mm": 156.2499237060547
+        },
+        "trachea": {
+          "median_hu": -897.0,
+          "iqr_hu": 149.0,
+          "offset_x_mm": -8.036143659375428,
+          "offset_y_mm": 2.493835647997236,
+          "extent_x_mm": 100.5858883857727,
+          "extent_y_mm": 81.05464792251587
+        },
+        "aorta": {
+          "median_hu": 163.0,
+          "iqr_hu": 27.0,
+          "offset_x_mm": 8.832267363408072,
+          "offset_y_mm": 12.153899199393434,
+          "extent_x_mm": 84.96089601516724,
+          "extent_y_mm": 136.71868324279785
+        }
+      }
+    },
+    {
+      "patient": "Patient_33",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 14.990810556171935,
+      "foreground_offset_y_mm": -58.80737551829415,
+      "foreground_extent_x_mm": 131.8359375,
+      "foreground_extent_y_mm": 173.828125,
+      "foreground_margin_x_low_mm": 145.5078125,
+      "foreground_margin_x_high_mm": 106.4453125,
+      "foreground_margin_y_low_mm": 55.6640625,
+      "foreground_margin_y_high_mm": 154.296875,
+      "minimum_foreground_margin_mm": 55.6640625,
+      "body_offset_x_mm": -1.693264505873468,
+      "body_offset_y_mm": -20.196000634208943,
+      "body_roll_degrees": 1.7827266958383845,
+      "body_x_mm": 383.7890625,
+      "body_y_mm": 277.34375,
+      "noise_sigma_hu": 11.8608,
+      "organs": {
+        "esophagus": {
+          "median_hu": -3.0,
+          "iqr_hu": 339.0,
+          "offset_x_mm": 9.662282397616323,
+          "offset_y_mm": -11.456513803514257,
+          "extent_x_mm": 41.015625,
+          "extent_y_mm": 63.4765625
+        },
+        "heart": {
+          "median_hu": 25.0,
+          "iqr_hu": 45.0,
+          "offset_x_mm": 17.123251072296007,
+          "offset_y_mm": -73.13391559037984,
+          "extent_x_mm": 131.8359375,
+          "extent_y_mm": 130.859375
+        },
+        "trachea": {
+          "median_hu": -945.5,
+          "iqr_hu": 287.0,
+          "offset_x_mm": 0.5762389395140011,
+          "offset_y_mm": -22.027597563391453,
+          "extent_x_mm": 83.984375,
+          "extent_y_mm": 42.96875
+        },
+        "aorta": {
+          "median_hu": 37.0,
+          "iqr_hu": 24.0,
+          "offset_x_mm": 9.895569020674788,
+          "offset_y_mm": -21.08838631602833,
+          "extent_x_mm": 91.796875,
+          "extent_y_mm": 125.0
+        }
+      }
+    },
+    {
+      "patient": "Patient_34",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 31.245755048425906,
+      "foreground_offset_y_mm": -40.774650353354644,
+      "foreground_extent_x_mm": 156.2499237060547,
+      "foreground_extent_y_mm": 175.78116416931152,
+      "foreground_margin_x_low_mm": 151.36711359024048,
+      "foreground_margin_x_high_mm": 76.17183780670166,
+      "foreground_margin_y_low_mm": 67.38277959823608,
+      "foreground_margin_y_high_mm": 140.62493133544922,
+      "minimum_foreground_margin_mm": 67.38277959823608,
+      "body_offset_x_mm": 1.9749791443609412,
+      "body_offset_y_mm": -4.104759572992366,
+      "body_roll_degrees": 1.8062744903643946,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 272.9490854740143,
+      "noise_sigma_hu": 8.8956,
+      "organs": {
+        "esophagus": {
+          "median_hu": 30.0,
+          "iqr_hu": 62.0,
+          "offset_x_mm": 13.488520885115381,
+          "offset_y_mm": 1.106319821307055,
+          "extent_x_mm": 68.35934162139893,
+          "extent_y_mm": 81.05464792251587
+        },
+        "heart": {
+          "median_hu": 115.0,
+          "iqr_hu": 100.0,
+          "offset_x_mm": 38.02003097027618,
+          "offset_y_mm": -57.29297849006227,
+          "extent_x_mm": 156.2499237060547,
+          "extent_y_mm": 134.76555919647217
+        },
+        "trachea": {
+          "median_hu": -896.0,
+          "iqr_hu": 187.0,
+          "offset_x_mm": 4.397986835220208,
+          "offset_y_mm": -26.31560503752712,
+          "extent_x_mm": 83.9843339920044,
+          "extent_y_mm": 74.21871376037598
+        },
+        "aorta": {
+          "median_hu": 162.0,
+          "iqr_hu": 32.0,
+          "offset_x_mm": 21.098588737159986,
+          "offset_y_mm": -3.329440845723914,
+          "extent_x_mm": 73.24215173721313,
+          "extent_y_mm": 124.02337694168091
+        }
+      }
+    },
+    {
+      "patient": "Patient_35",
+      "original_spacing_xy_mm": [
+        1.3671875,
+        1.3671875
+      ],
+      "effective_spacing_xy_mm": [
+        1.0004679361979167,
+        1.0004679361979167
+      ],
+      "foreground_offset_x_mm": 19.041908616177714,
+      "foreground_offset_y_mm": -31.372924309190164,
+      "foreground_extent_x_mm": 144.921875,
+      "foreground_extent_y_mm": 155.859375,
+      "foreground_margin_x_low_mm": 143.5546875,
+      "foreground_margin_x_high_mm": 95.703125,
+      "foreground_margin_y_low_mm": 88.8671875,
+      "foreground_margin_y_high_mm": 139.453125,
+      "minimum_foreground_margin_mm": 88.8671875,
+      "body_offset_x_mm": -6.792781489149718,
+      "body_offset_y_mm": 6.655196130580229,
+      "body_roll_degrees": 0.8069030088468097,
+      "body_x_mm": 373.92578125,
+      "body_y_mm": 257.03125,
+      "noise_sigma_hu": 17.7912,
+      "organs": {
+        "esophagus": {
+          "median_hu": 22.0,
+          "iqr_hu": 50.0,
+          "offset_x_mm": -2.054715407322888,
+          "offset_y_mm": 13.710131288450073,
+          "extent_x_mm": 39.6484375,
+          "extent_y_mm": 41.015625
+        },
+        "heart": {
+          "median_hu": 28.0,
+          "iqr_hu": 49.0,
+          "offset_x_mm": 23.464132609895884,
+          "offset_y_mm": -42.62836827162936,
+          "extent_x_mm": 144.921875,
+          "extent_y_mm": 125.78125
+        },
+        "trachea": {
+          "median_hu": -960.0,
+          "iqr_hu": 183.0,
+          "offset_x_mm": -10.65245376208489,
+          "offset_y_mm": 3.853009076818009,
+          "extent_x_mm": 77.9296875,
+          "extent_y_mm": 61.5234375
+        },
+        "aorta": {
+          "median_hu": 37.0,
+          "iqr_hu": 35.0,
+          "offset_x_mm": 7.483192340313516,
+          "offset_y_mm": 9.061375833528318,
+          "extent_x_mm": 60.15625,
+          "extent_y_mm": 101.171875
+        }
+      }
+    },
+    {
+      "patient": "Patient_36",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 7.224859044507176,
+      "foreground_offset_y_mm": -24.300139372910674,
+      "foreground_extent_x_mm": 132.8125,
+      "foreground_extent_y_mm": 172.8515625,
+      "foreground_margin_x_low_mm": 133.7890625,
+      "foreground_margin_x_high_mm": 117.1875,
+      "foreground_margin_y_low_mm": 86.9140625,
+      "foreground_margin_y_high_mm": 124.0234375,
+      "minimum_foreground_margin_mm": 86.9140625,
+      "body_offset_x_mm": -7.021724876257421,
+      "body_offset_y_mm": 15.070074874652146,
+      "body_roll_degrees": 2.2057524706526053,
+      "body_x_mm": 378.41796875,
+      "body_y_mm": 284.1796875,
+      "noise_sigma_hu": 17.7912,
+      "organs": {
+        "esophagus": {
+          "median_hu": 17.0,
+          "iqr_hu": 69.0,
+          "offset_x_mm": 1.8179392163926167,
+          "offset_y_mm": 21.600953286573993,
+          "extent_x_mm": 38.0859375,
+          "extent_y_mm": 52.734375
+        },
+        "heart": {
+          "median_hu": 28.0,
+          "iqr_hu": 60.0,
+          "offset_x_mm": 8.408801590746501,
+          "offset_y_mm": -43.08087712448525,
+          "extent_x_mm": 132.8125,
+          "extent_y_mm": 131.8359375
+        },
+        "trachea": {
+          "median_hu": -964.0,
+          "iqr_hu": 82.0,
+          "offset_x_mm": -7.916768900655125,
+          "offset_y_mm": 4.34583987109921,
+          "extent_x_mm": 89.84375,
+          "extent_y_mm": 55.6640625
+        },
+        "aorta": {
+          "median_hu": 45.0,
+          "iqr_hu": 42.0,
+          "offset_x_mm": 7.134653837068044,
+          "offset_y_mm": 15.538356026912586,
+          "extent_x_mm": 78.125,
+          "extent_y_mm": 131.8359375
+        }
+      }
+    },
+    {
+      "patient": "Patient_37",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 22.936806715334935,
+      "foreground_offset_y_mm": -17.75973661987875,
+      "foreground_extent_x_mm": 148.43742752075195,
+      "foreground_extent_y_mm": 154.296799659729,
+      "foreground_margin_x_low_mm": 144.5311794281006,
+      "foreground_margin_x_high_mm": 90.82026815414429,
+      "foreground_margin_y_low_mm": 104.49213647842407,
+      "foreground_margin_y_high_mm": 124.99993896484375,
+      "minimum_foreground_margin_mm": 90.82026815414429,
+      "body_offset_x_mm": 1.226496466281464,
+      "body_offset_y_mm": 19.04135644957134,
+      "body_roll_degrees": 1.2771522962298292,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 268.0662753582001,
+      "noise_sigma_hu": 12.6021,
+      "organs": {
+        "esophagus": {
+          "median_hu": 26.0,
+          "iqr_hu": 50.0,
+          "offset_x_mm": 1.556860666891178,
+          "offset_y_mm": 27.217448815785747,
+          "extent_x_mm": 47.85153913497925,
+          "extent_y_mm": 44.92185306549072
+        },
+        "heart": {
+          "median_hu": 27.0,
+          "iqr_hu": 75.0,
+          "offset_x_mm": 26.713261515991405,
+          "offset_y_mm": -30.599295179223038,
+          "extent_x_mm": 148.43742752075195,
+          "extent_y_mm": 122.07025289535522
+        },
+        "trachea": {
+          "median_hu": -837.0,
+          "iqr_hu": 350.0,
+          "offset_x_mm": -4.283645855459078,
+          "offset_y_mm": 16.612751467200585,
+          "extent_x_mm": 83.9843339920044,
+          "extent_y_mm": 55.66403532028198
+        },
+        "aorta": {
+          "median_hu": 45.0,
+          "iqr_hu": 28.0,
+          "offset_x_mm": 15.664113844230318,
+          "offset_y_mm": 23.41796663008153,
+          "extent_x_mm": 82.03120994567871,
+          "extent_y_mm": 107.4218225479126
+        }
+      }
+    },
+    {
+      "patient": "Patient_38",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 22.743059735741493,
+      "foreground_offset_y_mm": -31.347590486521604,
+      "foreground_extent_x_mm": 145.50774145126343,
+      "foreground_extent_y_mm": 140.62493133544922,
+      "foreground_margin_x_low_mm": 148.43742752075195,
+      "foreground_margin_x_high_mm": 89.84370613098145,
+      "foreground_margin_y_low_mm": 96.67964029312134,
+      "foreground_margin_y_high_mm": 146.48430347442627,
+      "minimum_foreground_margin_mm": 89.84370613098145,
+      "body_offset_x_mm": 1.9328877872841166,
+      "body_offset_y_mm": 3.4510513703315846,
+      "body_roll_degrees": 0.5054641266443483,
+      "body_x_mm": 361.32794857025146,
+      "body_y_mm": 229.98035645484924,
+      "noise_sigma_hu": 13.343399999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 64.0,
+          "iqr_hu": 49.0,
+          "offset_x_mm": 5.074446560437081,
+          "offset_y_mm": 8.23469100406288,
+          "extent_x_mm": 55.66403532028198,
+          "extent_y_mm": 73.24215173721313
+        },
+        "heart": {
+          "median_hu": 149.0,
+          "iqr_hu": 146.0,
+          "offset_x_mm": 26.417187852863638,
+          "offset_y_mm": -40.68004452591045,
+          "extent_x_mm": 145.50774145126343,
+          "extent_y_mm": 119.1405668258667
+        },
+        "trachea": {
+          "median_hu": -966.0,
+          "iqr_hu": 252.0,
+          "offset_x_mm": -3.7189742995338637,
+          "offset_y_mm": -12.85907538220213,
+          "extent_x_mm": 68.35934162139893,
+          "extent_y_mm": 83.9843339920044
+        },
+        "aorta": {
+          "median_hu": 231.0,
+          "iqr_hu": 45.0,
+          "offset_x_mm": 16.06280028623902,
+          "offset_y_mm": 0.7144861090636141,
+          "extent_x_mm": 80.07808589935303,
+          "extent_y_mm": 103.51557445526123
+        }
+      }
+    },
+    {
+      "patient": "Patient_39",
+      "original_spacing_xy_mm": [
+        0.9765625,
+        0.9765625
+      ],
+      "effective_spacing_xy_mm": [
+        0.99945068359375,
+        0.99945068359375
+      ],
+      "foreground_offset_x_mm": 20.361547025483677,
+      "foreground_offset_y_mm": -33.256260387368954,
+      "foreground_extent_x_mm": 158.203125,
+      "foreground_extent_y_mm": 143.5546875,
+      "foreground_margin_x_low_mm": 135.7421875,
+      "foreground_margin_x_high_mm": 89.84375,
+      "foreground_margin_y_low_mm": 91.796875,
+      "foreground_margin_y_high_mm": 148.4375,
+      "minimum_foreground_margin_mm": 89.84375,
+      "body_offset_x_mm": -5.626187948729127,
+      "body_offset_y_mm": -2.4701925859793166,
+      "body_roll_degrees": 1.6651203924111755,
+      "body_x_mm": 383.7890625,
+      "body_y_mm": 269.04296875,
+      "noise_sigma_hu": 13.343399999999999,
+      "organs": {
+        "esophagus": {
+          "median_hu": 26.0,
+          "iqr_hu": 36.0,
+          "offset_x_mm": 0.6635555137647631,
+          "offset_y_mm": 5.762582731733051,
+          "extent_x_mm": 52.734375,
+          "extent_y_mm": 41.015625
+        },
+        "heart": {
+          "median_hu": 17.0,
+          "iqr_hu": 78.0,
+          "offset_x_mm": 23.87459482705251,
+          "offset_y_mm": -43.30695264064421,
+          "extent_x_mm": 158.203125,
+          "extent_y_mm": 115.234375
+        },
+        "trachea": {
+          "median_hu": -956.0,
+          "iqr_hu": 168.0,
+          "offset_x_mm": -12.62779687246718,
+          "offset_y_mm": -9.050339271964663,
+          "extent_x_mm": 67.3828125,
+          "extent_y_mm": 55.6640625
+        },
+        "aorta": {
+          "median_hu": 35.0,
+          "iqr_hu": 25.0,
+          "offset_x_mm": 12.912043617631735,
+          "offset_y_mm": 0.6039733033307015,
+          "extent_x_mm": 71.2890625,
+          "extent_y_mm": 111.328125
+        }
+      }
+    },
+    {
+      "patient": "Patient_40",
+      "original_spacing_xy_mm": [
+        0.9765620231628418,
+        0.9765620231628418
+      ],
+      "effective_spacing_xy_mm": [
+        0.9994501955807209,
+        0.9994501955807209
+      ],
+      "foreground_offset_x_mm": 16.643246061984776,
+      "foreground_offset_y_mm": -20.874727832565803,
+      "foreground_extent_x_mm": 134.76555919647217,
+      "foreground_extent_y_mm": 139.64836931228638,
+      "foreground_margin_x_low_mm": 142.5780553817749,
+      "foreground_margin_x_high_mm": 106.44526052474976,
+      "foreground_margin_y_low_mm": 107.4218225479126,
+      "foreground_margin_y_high_mm": 136.71868324279785,
+      "minimum_foreground_margin_mm": 106.44526052474976,
+      "body_offset_x_mm": -1.309200270745562,
+      "body_offset_y_mm": 16.47265872665252,
+      "body_roll_degrees": 2.3555008406777134,
+      "body_x_mm": 383.7888751029968,
+      "body_y_mm": 248.53503489494324,
+      "noise_sigma_hu": 9.6369,
+      "organs": {
+        "esophagus": {
+          "median_hu": 29.0,
+          "iqr_hu": 39.0,
+          "offset_x_mm": 2.823444706529043,
+          "offset_y_mm": 17.916665449136925,
+          "extent_x_mm": 47.85153913497925,
+          "extent_y_mm": 51.757787227630615
+        },
+        "heart": {
+          "median_hu": 40.0,
+          "iqr_hu": 39.0,
+          "offset_x_mm": 18.135631809711295,
+          "offset_y_mm": -31.491393481595953,
+          "extent_x_mm": 134.76555919647217,
+          "extent_y_mm": 110.35150861740112
+        },
+        "trachea": {
+          "median_hu": -902.0,
+          "iqr_hu": 235.5,
+          "offset_x_mm": 0.08833608507864404,
+          "offset_y_mm": 1.6347388333081767,
+          "extent_x_mm": 80.07808589935303,
+          "extent_y_mm": 72.2655897140503
+        },
+        "aorta": {
+          "median_hu": 44.0,
+          "iqr_hu": 21.0,
+          "offset_x_mm": 16.49612427537314,
+          "offset_y_mm": 10.036321514704975,
+          "extent_x_mm": 78.12496185302734,
+          "extent_y_mm": 107.4218225479126
+        }
+      }
+    }
+  ]
+}
