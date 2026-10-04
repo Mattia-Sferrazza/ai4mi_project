@@ -9,7 +9,7 @@ import torch
 from PIL import Image
 
 from data_loading.augmentations import SegmentationAugmentation, build_augmentation
-from data_loading.dataset import make_dataset
+from data_loading.dataset import SliceDataset, make_dataset
 from data_loading.reproducibility import seed_everything
 from preprocessing.validate_preprocessing_ablation import validate_pair
 
@@ -138,6 +138,41 @@ class SegmentationAugmentationTests(unittest.TestCase):
 
         self.assertTrue(torch.equal(first_image, second_image))
         self.assertTrue(torch.equal(first_target, second_target))
+
+    def test_slice_dataset_returns_jointly_transformed_image(self):
+        with TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            (root / "train" / "img").mkdir(parents=True)
+            (root / "train" / "gt").mkdir(parents=True)
+            Image.fromarray(np.full((8, 8), 64, dtype=np.uint8)).save(
+                root / "train" / "img" / "Patient_01_0000.png"
+            )
+            Image.fromarray(np.zeros((8, 8), dtype=np.uint8)).save(
+                root / "train" / "gt" / "Patient_01_0000.png"
+            )
+
+            def image_transform(image):
+                return torch.from_numpy(np.array(image, copy=True)).float().unsqueeze(0) / 255
+
+            def target_transform(image):
+                labels = torch.from_numpy(np.array(image, copy=True)).long()
+                return torch.nn.functional.one_hot(labels, num_classes=5).permute(2, 0, 1).float()
+
+            def joint_transform(image, target):
+                return image + 0.25, target
+
+            dataset = SliceDataset(
+                "train",
+                root,
+                img_transform=image_transform,
+                gt_transform=target_transform,
+                joint_transform=joint_transform,
+            )
+            sample = dataset[0]
+
+            expected = torch.full((1, 8, 8), 64 / 255 + 0.25)
+            self.assertTrue(torch.allclose(sample["images"], expected))
+            self.assertTrue(torch.all(sample["gts"].sum(dim=0) == 1))
 
 
 if __name__ == "__main__":

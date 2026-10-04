@@ -113,8 +113,7 @@ class SliceDataset(Dataset):
 
         img: Tensor = self.img_transform(Image.open(img_path))
 
-        data_dict = {"images": img,
-                     "stems": img_path.stem}
+        data_dict = {"stems": img_path.stem}
 
         if self.has_labels:
             gt: Tensor = self.gt_transform(Image.open(gt_path))
@@ -127,5 +126,10 @@ class SliceDataset(Dataset):
             assert gt.shape == (K, W, H)
 
             data_dict["gts"] = gt
+
+        # Store the image only after the optional joint transform.  Keeping
+        # the pre-transform tensor here silently discards intensity changes
+        # and, for spatial augmentation, misaligns the image and target.
+        data_dict["images"] = img
 
         return data_dict
