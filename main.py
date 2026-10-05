@@ -42,7 +42,6 @@ from torch.utils.data import DataLoader
 from functools import partial 
 
 from data_loading.dataset import SliceDataset
-from data_loading.augmentations import AUGMENTATION_MODES, build_augmentation
 from data_loading.reproducibility import (
     data_loader_generator,
     seed_data_loader_worker,
@@ -70,7 +69,6 @@ datasets_params: dict[str, dict[str, Any]] = {}
 datasets_params["TOY2"] = {'K': 2, 'net': shallowCNN, 'B': 2, 'kernels': 8, 'factor': 2}
 datasets_params["SEGTHOR"] = {'K': 5, 'net': ENet, 'B': 8, 'kernels': 8, 'factor': 2}
 datasets_params["SEGTHOR_FULL"] = {'K': 5, 'net': ENet, 'B': 4, 'kernels': 8, 'factor': 2}
-datasets_params["SEGTHOR_FULL_CLAHE"] = {'K': 5, 'net': ENet, 'B': 4, 'kernels': 8, 'factor': 2}
 datasets_params["SEGTHOR_CLEAN"] = {'K': 5, 'net': ENet, 'B': 8, 'kernels': 8, 'factor': 2}
 datasets_params["SEGTHOR_CORRECTED"] = {'K': 5, 'net': ENet, 'B': 8, 'kernels': 8, 'factor': 2}
 
@@ -113,13 +111,11 @@ def setup(args) -> tuple[nn.Module, Any, Any, DataLoader, DataLoader, int]:
     # Dataset part
     B: int = datasets_params[args.dataset]['B']
     root_dir = Path("data") / args.dataset
-    train_augmentation = build_augmentation(args.augmentation)
 
     train_set = SliceDataset('train',
                              root_dir,
                              img_transform=img_transform,
                              gt_transform= partial(gt_transform, K),
-                             joint_transform=train_augmentation,
                              debug=args.debug)
     train_generator = data_loader_generator(args.seed)
     train_loader = DataLoader(train_set,
@@ -348,10 +344,8 @@ def main():
     parser.add_argument('--mode', default='full', choices=['partial', 'full'])
     parser.add_argument('--loss', default='ce_dice', choices=list(LOSSES.keys()),
                         help="Loss function to use for training.")
-    parser.add_argument('--augmentation', default='none', choices=AUGMENTATION_MODES,
-                        help="Online augmentation applied to training samples only.")
     parser.add_argument('--seed', default=0, type=int,
-                        help="Random seed for initialization, shuffling, and augmentation.")
+                        help="Random seed for initialization and data-loader shuffling.")
     parser.add_argument('--dest', type=Path, required=True,
                         help="Destination directory to save the results (predictions and weights).")
 

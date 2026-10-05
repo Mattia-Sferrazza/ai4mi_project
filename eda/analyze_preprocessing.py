@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gc
 import json
 from pathlib import Path
 
@@ -12,11 +13,9 @@ import matplotlib.pyplot as plt
 import nibabel as nib
 import numpy as np
 from matplotlib.patches import Rectangle
-from skimage import exposure
 from skimage.transform import resize
 
 
-ORGAN_NAMES = {1: "Esophagus", 2: "Heart", 3: "Trachea", 4: "Aorta"}
 PLOT_PATIENTS = ("Patient_05", "Patient_19", "Patient_30", "Patient_40")
 CROP_FIELDS_OF_VIEW_MM = (320, 352, 384, 416)
 OUTPUT_SHAPE = (384, 384)
@@ -58,11 +57,6 @@ def fixed_hu_normalize(array: np.ndarray) -> np.ndarray:
     return (np.clip(array.astype(np.float32), low, high) - low) / (high - low)
 
 
-def dice(mask_a: np.ndarray, mask_b: np.ndarray) -> float:
-    denominator = int(mask_a.sum() + mask_b.sum())
-    return float("nan") if denominator == 0 else 2.0 * int(np.logical_and(mask_a, mask_b).sum()) / denominator
-
-
 def foreground_bbox(mask: np.ndarray) -> tuple[int, int, int, int]:
     coordinates = np.where(mask > 0)
     return (
@@ -89,7 +83,6 @@ def analyse(args: argparse.Namespace) -> None:
         raise RuntimeError(f"Expected 40 official patients, found {len(patient_dirs)}")
 
     cohort_rows: list[dict[str, object]] = []
-    comparison_rows: list[dict[str, object]] = []
     plot_examples: dict[str, dict[str, np.ndarray | int]] = {}
 
     for index, patient_dir in enumerate(patient_dirs, start=1):
@@ -151,53 +144,34 @@ def analyse(args: argparse.Namespace) -> None:
             cropped_gt = centre_crop(gt_slice, physical_crop_shape)
             windowed = resize_image(fixed_hu_normalize(cropped_slice))
             resized_gt = resize_label(cropped_gt)
-            clahe = exposure.equalize_adapthist(windowed, kernel_size=32, clip_limit=0.01)
             plot_examples[patient] = {
                 "z": z_index,
                 "current": minmax_slice,
                 "current_gt": direct_gt,
                 "windowed": windowed,
                 "cropped_gt": resized_gt,
-                "clahe": clahe,
             }
 
-        old_dir = args.fixed20_root / "train" / patient
-        if old_dir.is_dir():
-            old_ct_image = nib.load(str(old_dir / f"{patient}.nii.gz"))
-            old_gt_image = nib.load(str(old_dir / "GT.nii.gz"))
-            old_ct = np.asanyarray(old_ct_image.dataobj)
-            old_gt = np.asanyarray(old_gt_image.dataobj).astype(np.uint8)
-            comparison: dict[str, object] = {
-                "patient": patient,
-                "ct_voxels_identical": bool(np.array_equal(ct, old_ct)),
-                "ct_affine_identical": bool(np.allclose(ct_image.affine, old_ct_image.affine, atol=1e-5)),
-                "gt_affine_identical": bool(np.allclose(gt_image.affine, old_gt_image.affine, atol=1e-5)),
-                "different_gt_voxels": int(np.count_nonzero(gt != old_gt)),
-            }
-            for label, organ in ORGAN_NAMES.items():
-                comparison[f"{organ.lower()}_dice"] = dice(gt == label, old_gt == label)
-            comparison_rows.append(comparison)
-
-        del ct, gt
+        # The NIfTI volumes are large. Release each patient's arrays and image
+        # proxies before loading the next patient so the EDA also works on
+        # laptops with limited RAM.
+        del ct, gt, ct_image, gt_image, foreground, sample
+        gc.collect()
 
     write_csv(args.output / "full_cohort_preprocessing_summary.csv", cohort_rows)
-    write_csv(args.output / "official_vs_fixed20.csv", comparison_rows)
     make_before_after_plot(plot_examples, args.output)
     make_intensity_plot(cohort_rows, args.output)
     make_crop_plot(cohort_rows, args.output)
     make_spacing_plot(cohort_rows, args.output)
-    make_comparison_plot(comparison_rows, args.output)
 
     summary = {
         "patients": len(cohort_rows),
-        "fixed20_comparisons": len(comparison_rows),
         "archive_sha256": "53e99dfb45234a9ed4ac573db767cb5e3179da209c6a5bf1ddc999bce03f4e51",
         "spacing_x_range_mm": [min(row["spacing_x_mm"] for row in cohort_rows), max(row["spacing_x_mm"] for row in cohort_rows)],
         "spacing_z_values_mm": sorted({row["spacing_z_mm"] for row in cohort_rows}),
         "fov_384_min_retained_percent": min(row["fov_384_retained_percent"] for row in cohort_rows),
         "current_zero_hu_uint8_range": [min(row["zero_hu_current_uint8"] for row in cohort_rows), max(row["zero_hu_current_uint8"] for row in cohort_rows)],
         "fixed_zero_hu_uint8": 127.5,
-        "fixed20_ct_identical_count": sum(bool(row["ct_voxels_identical"]) for row in comparison_rows),
     }
     (args.output / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
@@ -208,24 +182,23 @@ def add_contours(axis: plt.Axes, label: np.ndarray) -> None:
 
 
 def make_before_after_plot(examples: dict[str, dict[str, np.ndarray | int]], output: Path) -> None:
-    figure, axes = plt.subplots(len(PLOT_PATIENTS), 3, figsize=(10.5, 12), constrained_layout=True)
+    figure, axes = plt.subplots(len(PLOT_PATIENTS), 2, figsize=(8, 12), constrained_layout=True)
     column_titles = (
         "Current: full slice + per-scan min-max",
-        "384 mm crop + fixed HU window",
-        "384 mm crop + HU window + CLAHE",
+        "Selected: 384 mm crop + fixed HU window",
     )
     for column, title in enumerate(column_titles):
         axes[0, column].set_title(title, fontsize=11, weight="bold")
     for row, patient in enumerate(PLOT_PATIENTS):
         example = examples[patient]
-        images = (example["current"], example["windowed"], example["clahe"])
-        labels = (example["current_gt"], example["cropped_gt"], example["cropped_gt"])
+        images = (example["current"], example["windowed"])
+        labels = (example["current_gt"], example["cropped_gt"])
         for column, (image, label) in enumerate(zip(images, labels)):
             axes[row, column].imshow(np.rot90(image), cmap="gray", vmin=0, vmax=1)
             add_contours(axes[row, column], label)
             axes[row, column].axis("off")
         axes[row, 0].set_ylabel(f"{patient}\nslice {example['z']}", fontsize=10)
-    figure.suptitle("Representative SegTHOR slices before and after candidate preprocessing\nColored contours show ground-truth organ boundaries", fontsize=14, weight="bold")
+    figure.suptitle("Representative SegTHOR slices before and after selected preprocessing\nColored contours show ground-truth organ boundaries", fontsize=14, weight="bold")
     figure.savefig(output / "preprocessing_before_after.png", dpi=180, facecolor="white")
     plt.close(figure)
 
@@ -290,38 +263,9 @@ def make_spacing_plot(rows: list[dict[str, object]], output: Path) -> None:
     plt.close(figure)
 
 
-def make_comparison_plot(rows: list[dict[str, object]], output: Path) -> None:
-    if not rows:
-        return
-    matrix = np.array(
-        [[float(row[f"{organ.lower()}_dice"]) for organ in ORGAN_NAMES.values()] for row in rows]
-    )
-    figure, axis = plt.subplots(figsize=(8, 7), constrained_layout=True)
-    image = axis.imshow(matrix, cmap="viridis", vmin=0.97, vmax=1, aspect="auto")
-    axis.set_xticks(range(4), ORGAN_NAMES.values(), rotation=25, ha="right")
-    axis.set_yticks(range(len(rows)), [row["patient"].replace("Patient_", "P") for row in rows])
-    axis.set(title="Old corrected masks vs official full-dataset masks\nDice = 1 means identical organ masks", xlabel="Organ", ylabel="Patient")
-    for patient_index in range(matrix.shape[0]):
-        for organ_index in range(matrix.shape[1]):
-            axis.text(
-                organ_index,
-                patient_index,
-                f"{matrix[patient_index, organ_index]:.3f}",
-                ha="center",
-                va="center",
-                fontsize=6.5,
-                color="black",
-            )
-    colorbar = figure.colorbar(image, ax=axis)
-    colorbar.set_label("3D Dice")
-    figure.savefig(output / "official_vs_fixed20_dice.png", dpi=180, facecolor="white")
-    plt.close(figure)
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--full-root", type=Path, default=Path("data/segthor_train_full"))
-    parser.add_argument("--fixed20-root", type=Path, default=Path("data/segthor_part1_clean_cc"))
     parser.add_argument("--output", type=Path, default=Path("eda/preprocessing_figures"))
     return parser.parse_args()
 

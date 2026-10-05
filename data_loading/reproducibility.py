@@ -1,8 +1,7 @@
 """Reusable seeding helpers for models and data loaders.
 
 The dataset split seed is deliberately separate from a training run seed.
-Keep the split seed fixed while repeating each experiment with several run
-seeds for initialization, shuffling, and online augmentation.
+Keep the split seed fixed while varying initialization and data-loader seeds.
 """
 
 from __future__ import annotations

@@ -1,68 +1,44 @@
-# Snellius preprocessing runbook
+# Final SegTHOR preprocessing on Snellius
 
-This workflow deliberately stops between experiment stages so preprocessing
-and smoke-test outputs can be checked before more GPU jobs are submitted. The
-six-patient test cohort is never evaluated during these decisions.
+This job builds the selected deterministic dataset only. It does not create a
+CLAHE variant and does not run online augmentation experiments.
 
-## Files
+## Input
 
-- `preprocess_full_segthor.sbatch`: extract, preprocess, validate, and render QC
-- `train_preprocessing_experiment.sbatch`: one generic GPU training/evaluation job
-- `submit_preprocessing_pair.sh`: submit two matched conditions for one or more seeds
-- `submit_augmentation_screen.sh`: submit geometric, intensity, and combined augmentation
-- `show_preprocessing_results.sh`: print completed summaries and HD95 results
+Upload the official clean archive to:
 
-## Experiment sequence
-
-1. Run `preprocess_full_segthor.sbatch`.
-2. Download and inspect the two QC PNGs.
-3. Submit a one-epoch pair as a full-pipeline smoke test.
-4. Submit HU-only versus CLAHE, seed 0, for 25 epochs.
-5. Select the preprocessing variant using validation 3-D Dice, per-organ Dice,
-   HD95, curves, and qualitative predictions.
-6. Reuse the seed-0 no-augmentation baseline and submit geometric-only,
-   intensity-only, and combined augmentation simultaneously for 25 epochs.
-7. Only if a condition looks useful, repeat the winner and no augmentation
-   with seeds 1 and 2.
-
-## Pair commands
-
-Smoke test:
-
-```bash
-bash snellius/submit_preprocessing_pair.sh \
-  SEGTHOR_FULL none \
-  SEGTHOR_FULL_CLAHE none \
-  smoke_1epoch 0 1
+```text
+/scratch-shared/$USER/ai4mi_project/source/segthor_train_full.zip
 ```
 
-CLAHE screen:
+The job checks the archive against `data/segthor_train_full.sha256` before
+extracting it.
+
+## Run
 
 ```bash
-bash snellius/submit_preprocessing_pair.sh \
-  SEGTHOR_FULL none \
-  SEGTHOR_FULL_CLAHE none \
-  clahe_screen_seed0 0 25
+cd ~/projects/ai4mi_project
+mkdir -p logs
+JOB=$(sbatch --parsable snellius/preprocess_full_segthor.sbatch)
+echo "$JOB"
+squeue -j "$JOB"
 ```
 
-Augmentation screen, assuming HU-only was selected, consists of three jobs:
+After the job leaves the queue:
 
 ```bash
-bash snellius/submit_augmentation_screen.sh \
-  SEGTHOR_FULL augmentation_screen_seed0 0 25
+sacct -j "$JOB" --format=JobID,JobName,State,ExitCode,Elapsed
+cat "logs/segthor_preprocess-${JOB}.out"
+cat "logs/segthor_preprocess-${JOB}.err"
 ```
 
-If CLAHE was selected, replace `DATASET=SEGTHOR_FULL` with
-`DATASET=SEGTHOR_FULL_CLAHE`.
+The final output is:
 
-Example confirmation with seeds 1 and 2:
-
-```bash
-bash snellius/submit_preprocessing_pair.sh \
-  SEGTHOR_FULL none \
-  SEGTHOR_FULL combined \
-  augmentation_confirmation 1,2 25
+```text
+/scratch-shared/$USER/ai4mi_project/data/SEGTHOR_FULL
 ```
 
-Use a new run tag for every submission. Jobs in each pair are independent and
-can run simultaneously.
+It contains `img/`, `gt/`, `split.json`, `spacing.pkl`, and
+`preprocessing.json`. The repository receives a `data/SEGTHOR_FULL` symlink to
+that directory. The job refuses to overwrite an existing dataset and validates
+all existing output before reporting success.

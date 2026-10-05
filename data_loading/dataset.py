@@ -89,15 +89,10 @@ def make_dataset(root, subset) -> list[tuple[Path, Path | None]]:
 
 class SliceDataset(Dataset):
     def __init__(self, subset, root_dir, img_transform=None,
-                 gt_transform=None, joint_transform=None,
-                 augment=False, equalize=False, debug=False):
+                 gt_transform=None, debug=False):
         self.root_dir: str = root_dir
         self.img_transform: Callable = img_transform
         self.gt_transform: Callable = gt_transform
-        self.joint_transform: Callable | None = joint_transform
-        self.augmentation: bool = augment
-        self.equalize: bool = equalize
-
         self.files = make_dataset(root_dir, subset)
         if debug:
             self.files = self.files[:10]
@@ -118,18 +113,12 @@ class SliceDataset(Dataset):
         if self.has_labels:
             gt: Tensor = self.gt_transform(Image.open(gt_path))
 
-            if self.joint_transform is not None:
-                img, gt = self.joint_transform(img, gt)
-
             _, W, H = img.shape
             K, _, _ = gt.shape
             assert gt.shape == (K, W, H)
 
             data_dict["gts"] = gt
 
-        # Store the image only after the optional joint transform.  Keeping
-        # the pre-transform tensor here silently discards intensity changes
-        # and, for spatial augmentation, misaligns the image and target.
         data_dict["images"] = img
 
         return data_dict

@@ -30,7 +30,6 @@ from typing import Callable, Sequence
 import nibabel as nib
 import numpy as np
 from skimage.io import imsave
-from skimage import exposure
 from skimage.transform import resize
 
 from utils import map_, tqdm_
@@ -53,28 +52,6 @@ def window_ct(
     clipped = np.clip(image.astype(np.float32), lower_hu, upper_hu)
     scaled = (clipped - lower_hu) * (255.0 / (upper_hu - lower_hu))
     return np.rint(scaled).astype(np.uint8)
-
-
-def apply_clahe(
-    image: np.ndarray,
-    kernel_size: int = 32,
-    clip_limit: float = 0.01,
-) -> np.ndarray:
-    """Apply deterministic CLAHE to one final-resolution uint8 CT slice."""
-
-    if image.ndim != 2 or image.dtype != np.uint8:
-        raise TypeError("CLAHE expects one 2-D uint8 image")
-    if kernel_size <= 0:
-        raise ValueError("CLAHE kernel_size must be positive")
-    if not 0 < clip_limit <= 1:
-        raise ValueError("CLAHE clip_limit must be in (0, 1]")
-    enhanced = exposure.equalize_adapthist(
-        image,
-        kernel_size=kernel_size,
-        clip_limit=clip_limit,
-        nbins=256,
-    )
-    return np.rint(enhanced * 255).astype(np.uint8)
 
 
 def centre_crop_bounds(
@@ -181,9 +158,6 @@ def slice_patient(
     shape: tuple[int, int],
     target_spacing: tuple[float, float],
     intensity_window: tuple[float, float],
-    use_clahe: bool = False,
-    clahe_kernel_size: int = 32,
-    clahe_clip_limit: float = 0.01,
 ) -> dict[str, object]:
     id_path = source_path / "train" / id_
     ct_path = id_path / f"{id_}.nii.gz"
@@ -226,12 +200,6 @@ def slice_patient(
 
     for z_index in range(z_slices):
         image_slice = _resize_image(processed_ct[:, :, z_index], shape)
-        if use_clahe:
-            image_slice = apply_clahe(
-                image_slice,
-                kernel_size=clahe_kernel_size,
-                clip_limit=clahe_clip_limit,
-            )
         filename = f"{id_}_{z_index:04d}.png"
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=UserWarning)
@@ -390,9 +358,6 @@ def _process_patients(
     shape: tuple[int, int],
     target_spacing: tuple[float, float],
     intensity_window: tuple[float, float],
-    use_clahe: bool,
-    clahe_kernel_size: int,
-    clahe_clip_limit: float,
     process_count: int,
 ) -> list[dict[str, object]]:
     if not patient_ids:
@@ -406,9 +371,6 @@ def _process_patients(
         shape=shape,
         target_spacing=target_spacing,
         intensity_window=intensity_window,
-        use_clahe=use_clahe,
-        clahe_kernel_size=clahe_kernel_size,
-        clahe_clip_limit=clahe_clip_limit,
     )
 
     iterator = tqdm_(patient_ids)
@@ -453,9 +415,6 @@ def main(args: argparse.Namespace) -> None:
         shape=shape,
         target_spacing=target_spacing,
         intensity_window=intensity_window,
-        use_clahe=args.clahe,
-        clahe_kernel_size=args.clahe_kernel_size,
-        clahe_clip_limit=args.clahe_clip_limit,
         process_count=args.process,
     )
 
@@ -480,12 +439,6 @@ def main(args: argparse.Namespace) -> None:
                     float(shape[1] * target_spacing[1]),
                 ],
                 "intensity_window_hu": list(intensity_window),
-                "clahe": {
-                    "enabled": bool(args.clahe),
-                    "kernel_size": args.clahe_kernel_size,
-                    "clip_limit": args.clahe_clip_limit,
-                    "application_stage": "after resize, independently per axial slice",
-                },
                 "image_interpolation_order": 1,
                 "label_interpolation_order": 0,
                 "patients": all_metadata,
@@ -520,13 +473,6 @@ def get_args() -> argparse.Namespace:
         metavar=("LOWER_HU", "UPPER_HU"),
         help="Fixed CT intensity window before uint8 conversion.",
     )
-    parser.add_argument(
-        "--clahe",
-        action="store_true",
-        help="Apply deterministic slice-wise CLAHE after HU windowing and resizing.",
-    )
-    parser.add_argument("--clahe-kernel-size", type=int, default=32)
-    parser.add_argument("--clahe-clip-limit", type=float, default=0.01)
     parser.add_argument(
         "--validation-count",
         type=int,

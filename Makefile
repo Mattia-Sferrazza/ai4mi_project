@@ -50,18 +50,6 @@ data/SEGTHOR_FULL: data/segthor_train_full
 	python -m preprocessing.validate_processed_segthor $@_tmp
 	mv $@_tmp $@
 
-## Identical patient split and geometry, with deterministic slice-wise CLAHE
-data/SEGTHOR_FULL_CLAHE: data/segthor_train_full data/SEGTHOR_FULL
-	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))
-	rm -rf $@_tmp $@
-	python $(CFLAGS) -m preprocessing.slice_segthor --source_dir data/segthor_train_full --dest_dir $@_tmp \
-		--shape 384 384 --target-spacing 1.0 1.0 --window -1000 1000 \
-		--clahe --clahe-kernel-size 32 --clahe-clip-limit 0.01 \
-		--validation-count 6 --test-count 6 --test-pool-start 21 --split-seed 0
-	python -m preprocessing.validate_processed_segthor $@_tmp
-	python -m preprocessing.validate_preprocessing_ablation data/SEGTHOR_FULL $@_tmp
-	mv $@_tmp $@
-
 ## Corrected ground truth
 data/SEGTHOR_CORRECTED:
 	$(info $(green)python $(CFLAGS) -m preprocessing.slice_segthor$(reset))

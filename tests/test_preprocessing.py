@@ -7,7 +7,6 @@ import numpy as np
 from PIL import Image
 
 from preprocessing.slice_segthor import (
-    apply_clahe,
     crop_shape_for_spacing,
     get_patient_split,
     get_splits,
@@ -26,16 +25,6 @@ class IntensityPreprocessingTests(unittest.TestCase):
     def test_invalid_hu_window_is_rejected(self):
         with self.assertRaises(ValueError):
             window_ct(np.zeros((2, 2), dtype=np.int16), 100, 100)
-
-    def test_clahe_is_deterministic_uint8_and_increases_local_contrast(self):
-        image = np.tile(np.linspace(100, 120, 64, dtype=np.uint8), (64, 1))
-        first = apply_clahe(image, kernel_size=16, clip_limit=0.01)
-        second = apply_clahe(image, kernel_size=16, clip_limit=0.01)
-
-        self.assertEqual(first.dtype, np.uint8)
-        np.testing.assert_array_equal(first, second)
-        self.assertGreater(int(first.max()) - int(first.min()), int(image.max()) - int(image.min()))
-
 
 class SpatialPreprocessingTests(unittest.TestCase):
     def test_crop_shape_uses_physical_spacing(self):

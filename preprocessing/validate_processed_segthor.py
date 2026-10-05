@@ -123,12 +123,13 @@ def validate(processed_dir: Path) -> dict[str, object]:
         "image_slices": total_images,
         "label_slices": total_labels,
         "output_shape": list(output_shape),
-        "clahe_enabled": bool(metadata.get("clahe", {}).get("enabled", False)),
+        "requested_in_plane_spacing_mm": requested_spacing.tolist(),
         "effective_spacing_x_mm_range": [
             float(effective_xy[:, 0].min()),
             float(effective_xy[:, 0].max()),
         ],
         "max_requested_spacing_error_mm": max_spacing_error,
+        "validation_status": "passed",
     }
 
 

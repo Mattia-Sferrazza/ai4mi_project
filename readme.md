@@ -127,7 +127,6 @@ The synthetic dataset is generated randomly. For SegTHOR, put [`segthor_train_fu
 ```
 $ make data/TOY2
 $ make data/SEGTHOR_FULL
-$ make data/SEGTHOR_FULL_CLAHE  # Only for the CLAHE ablation
 ```
 
 
@@ -148,29 +147,14 @@ $ python -m preprocessing.slice_segthor \
          --window -1000 1000 --validation-count 6 --test-count 6 \
          --test-pool-start 21 --split-seed 0
 $ python -m preprocessing.validate_processed_segthor data/SEGTHOR_FULL
-$ python -m preprocessing.preview_augmentations \
-         --data-dir data/SEGTHOR_FULL \
-         --output eda/preprocessing_figures/augmentation_preview.png
 ```
 
-For the augmentation study, train with `--loss ce_dice` and choose
-`--augmentation none` or `combined`. Augmentation is sampled online for
-training slices only; validation and test images are never augmented.
-
-The patient split seed is fixed at `0`. Use training seed `0` for the initial
-preprocessing screen. If a change appears useful, repeat the relevant pair with
-`--seed 1` and `--seed 2` before claiming an improvement. Training seeds control
-initialization, data-loader shuffling, workers, and online augmentation without
-changing the patient split. Each result directory receives a `run_config.json`
-recording both seeds and the PyTorch/CUDA versions.
-
-The preprocessing and augmentation components are architecture-independent.
-Peer models can reuse `SliceDataset(...)` and pass
-`build_augmentation("none" | "geometric" | "intensity" | "combined")` as its
-`joint_transform`; they do not need to use the reference ENet training script.
-`make data/SEGTHOR_FULL_CLAHE` also verifies that its split, spacing, filenames,
-and masks are identical to the non-CLAHE dataset and that only CT images change.
-Use `python -m preprocessing.preview_preprocessing_ablation` for visual QC.
+The patient split seed is fixed at `0`. Training seeds control initialization
+and data-loader shuffling without changing patient membership. The selected
+preprocessing is architecture-independent; peer models can reuse
+`SliceDataset(...)` and the same `split.json`. See
+[`preprocessing/README.md`](preprocessing/README.md) for the exact processing,
+output format, validation, and sharing instructions.
 
 Patients 1–20 in the full archive are the same CT scans as the earlier partial dataset. Use the official full-dataset masks rather than appending the corrected partial dataset, which would duplicate patients across the cohort.
 
@@ -179,10 +163,8 @@ Patients 1–20 in the full archive are the same CT scans as the earlier partial
 Running a training
 ```
 $ python main.py --help
-$ python main.py --help
 $ python main.py --dataset SEGTHOR_FULL --mode full --loss ce_dice \
-    --augmentation combined --seed 0 --epochs 25 \
-    --dest results/segthor_full/combined/seed0 --gpu
+    --seed 0 --epochs 25 --dest results/segthor_full/seed0 --gpu
 ```
 
 The codebase uses a lot of assertions for control and self-documentation, they can easily be disabled with the `-O` option (for faster training) once everything is known to be correct (for instance run the previous command for 1/2 epochs, then kill it and relaunch it):
