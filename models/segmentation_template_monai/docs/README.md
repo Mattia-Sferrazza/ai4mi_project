@@ -31,6 +31,11 @@ and sliding window inferer:
 - `inference.yaml`: segments every `Patient_*.nii*` under `dataset_dir` and saves `Patient_XX_seg.nii.gz` files in
   the original CT space.
 - `multi_gpu_train.yaml`: mixin for DDP training with `torchrun`, see `train_multigpu.sh`.
+- `train_boundary.yaml`: optional overlay that leaves DiceCE unchanged and adds
+  `boundary_weight * log(1 + HausdorffDTLoss)`. The auxiliary term excludes
+  background and averages the four foreground organs. It is a training
+  surrogate; final HD95 is still evaluated on full patient volumes in physical
+  millimetres.
 
 Any config value can be overridden on the command line, e.g. `--fold 2` or `--hu_window "[-1000, 1000]"`.
 
@@ -45,3 +50,32 @@ models/segmentation_template_monai/docs/train.sh --fold 0
 models/segmentation_template_monai/docs/test.sh --fold 0 --ckpt_path <run dir>/model.pt
 models/segmentation_template_monai/docs/inference.sh --ckpt_path <run dir>/model.pt --dataset_dir <dir>
 ```
+
+## Boundary-aware ablation
+
+Keep the original SwinUNETR run as the reference. First screen only small
+boundary weights on fold 0:
+
+```sh
+snellius/submit_swin_unetr_boundary_screen.sh boundary_screen "0.005 0.01 0.02"
+```
+
+Choose a weight only if it reduces esophagus HD95 (and preferably the
+worst-patient HD95) without reducing mean foreground Dice by more than 0.005 or
+materially worsening another organ. The choice must be made on fold 0; do not
+inspect the official test set. Then freeze the weight and run all folds:
+
+```sh
+snellius/submit_swin_unetr_boundary_cv.sh 0.01 boundary_cv
+```
+
+All architecture, initialization, data, augmentation, optimizer, validation,
+early-stopping and checkpoint-selection settings remain inherited from the
+original experiment. Each run also saves `eval/nifti_metrics.csv` and
+`eval/nifti_metrics_summary.md`, containing patient-level Dice, physical-space
+HD95, precision and recall from the selected checkpoint.
+
+The job defaults to `data/segthor_train_full.zip` and
+`data/SEGTHOR_FULL_PREPROCESSED_split_cv/folds.json`. If those files live
+elsewhere, export `DATA_ZIP` and `FOLDS_FILE` before submission; the values are
+carried into each job by Slurm's `--export=ALL`.

@@ -1,0 +1,22 @@
+# Overlay for train.yaml: keep the original SwinUNETR experiment unchanged
+# and add a small distance-transform Hausdorff auxiliary term.
+#
+# Use after common.yaml and train.yaml:
+#   --config_file "['configs/common.yaml','configs/train.yaml','configs/train_boundary.yaml']"
+#   --boundary_weight 0.01
+
+boundary_weight: 0.01
+boundary_alpha: 2.0
+
+lossfn:
+  _target_: scripts.boundary_loss.DiceCEHausdorffLoss
+  # These settings reproduce the original DiceCELoss exactly.
+  include_background: true
+  to_onehot_y: true
+  softmax: true
+  squared_pred: true
+  batch: true
+  # The boundary term excludes background and averages the four organs.
+  boundary_include_background: false
+  boundary_weight: '@boundary_weight'
+  boundary_alpha: '@boundary_alpha'
