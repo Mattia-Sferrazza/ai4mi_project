@@ -75,7 +75,10 @@ original experiment. Each run also saves `eval/nifti_metrics.csv` and
 `eval/nifti_metrics_summary.md`, containing patient-level Dice, physical-space
 HD95, precision and recall from the selected checkpoint.
 
-The job defaults to `data/segthor_train_full.zip` and
-`data/SEGTHOR_FULL_PREPROCESSED_split_cv/folds.json`. If those files live
-elsewhere, export `DATA_ZIP` and `FOLDS_FILE` before submission; the values are
-carried into each job by Slurm's `--export=ALL`.
+The job accepts either `data/segthor_train_full.zip` or an already extracted
+directory containing the `Patient_XX` folders. It automatically checks the
+standard project and scratch locations; otherwise export `DATA_ZIP` or
+`VOLUME_DATA_ROOT`. The split defaults to
+`data/SEGTHOR_FULL_PREPROCESSED_split_cv/folds.json`, and can be overridden by
+exporting `FOLDS_FILE`. These values are carried into each job by Slurm's
+`--export=ALL`.

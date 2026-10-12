@@ -28,6 +28,7 @@ if [[ ! -d "$PROJECT/.git" && -d "$HOME/ai4mi_project/.git" ]]; then
 fi
 BUNDLE="$PROJECT/models/segmentation_template_monai"
 DATA_ZIP="${DATA_ZIP:-$PROJECT/data/segthor_train_full.zip}"
+VOLUME_DATA_ROOT="${VOLUME_DATA_ROOT:-}"
 FOLDS_FILE="${FOLDS_FILE:-$PROJECT/data/SEGTHOR_FULL_PREPROCESSED_split_cv/folds.json}"
 PRETRAINED="$BUNDLE/models/btcv_swin_unetr.pt"
 DATA_DIR="${TMPDIR:?TMPDIR is not set}/segthor_train_full"
@@ -62,10 +63,6 @@ if [[ ! -f "$PRETRAINED" ]]; then
     echo "Fetch them with: python -m monai.bundle download_large_files --bundle_path $BUNDLE" >&2
     exit 1
 fi
-if [[ ! -f "$DATA_ZIP" ]]; then
-    echo "Dataset archive missing: $DATA_ZIP" >&2
-    exit 1
-fi
 if [[ ! -f "$FOLDS_FILE" ]]; then
     echo "Cross-validation split missing: $FOLDS_FILE" >&2
     exit 1
@@ -76,11 +73,36 @@ if [[ -e "$RESULTS_DIR" ]]; then
 fi
 mkdir -p "$RESULTS_DIR" "$DATA_DIR"
 
-unzip -q "$DATA_ZIP" -d "$DATA_DIR"
-volume_count=$(find "$DATA_DIR/train" -name 'GT.nii.gz' | wc -l)
-echo "Volumes: $volume_count in $DATA_DIR/train"
+# Prefer an explicitly supplied extracted dataset. Otherwise automatically use
+# the standard scratch/project locations, falling back to the original ZIP.
+if [[ -z "$VOLUME_DATA_ROOT" ]]; then
+    for candidate in \
+        "/scratch-shared/$USER/ai4mi_project/data/segthor_train_full/train" \
+        "$PROJECT/data/segthor_train_full/train"
+    do
+        if [[ -d "$candidate" ]]; then
+            VOLUME_DATA_ROOT="$candidate"
+            break
+        fi
+    done
+fi
+
+if [[ -n "$VOLUME_DATA_ROOT" ]]; then
+    ACTIVE_DATA_ROOT="$VOLUME_DATA_ROOT"
+    echo "Using extracted volumes: $ACTIVE_DATA_ROOT"
+elif [[ -f "$DATA_ZIP" ]]; then
+    unzip -q "$DATA_ZIP" -d "$DATA_DIR"
+    ACTIVE_DATA_ROOT="$DATA_DIR/train"
+    echo "Using node-local volumes unpacked from: $DATA_ZIP"
+else
+    echo "No volume dataset found. Set VOLUME_DATA_ROOT to the directory containing Patient_XX folders or DATA_ZIP to the source archive." >&2
+    exit 1
+fi
+
+volume_count=$(find "$ACTIVE_DATA_ROOT" -mindepth 2 -maxdepth 2 -name 'GT.nii.gz' | wc -l)
+echo "Volumes: $volume_count in $ACTIVE_DATA_ROOT"
 if [[ "$volume_count" -ne 40 ]]; then
-    echo "Expected 40 labelled volumes in $DATA_ZIP" >&2
+    echo "Expected 40 labelled volumes, found $volume_count in $ACTIVE_DATA_ROOT" >&2
     exit 1
 fi
 
@@ -88,7 +110,7 @@ bundle_args=(
     --meta_file "$BUNDLE/configs/metadata.json"
     --logging_file "$BUNDLE/configs/logging.conf"
     --bundle_root "$BUNDLE"
-    --data_root "$DATA_DIR/train"
+    --data_root "$ACTIVE_DATA_ROOT"
     --folds_file "$FOLDS_FILE"
     --fold "$FOLD"
 )
@@ -117,7 +139,7 @@ python -u -m monai.bundle run \
 # the boundary term actually improves HD95 rather than merely training loss.
 python -u -m evaluation.evaluate_nifti_predictions \
     --prediction-dir "$RESULTS_DIR/eval" \
-    --data-root "$DATA_DIR/train" \
+    --data-root "$ACTIVE_DATA_ROOT" \
     --folds-file "$FOLDS_FILE" \
     --fold "$FOLD" \
     --output-dir "$RESULTS_DIR/eval"
@@ -128,6 +150,8 @@ boundary_weight=$BOUNDARY_WEIGHT
 boundary_alpha=2.0
 fold=$FOLD
 git_commit=$(git rev-parse HEAD)
+volume_data_root=$ACTIVE_DATA_ROOT
+folds_file=$FOLDS_FILE
 EOF
 
 echo "Finished: $(date)"
